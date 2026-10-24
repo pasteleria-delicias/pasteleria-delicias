@@ -2,120 +2,92 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Login - Pastelería</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iniciar Sesión - Pastelería</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+    
     body {
       background: linear-gradient(135deg, #ffe6d9, #ffd6cc);
-      height: 100vh;
+      min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
+      padding: 20px;
     }
-    .container {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      width: 900px;
+
+    /* Tarjeta blanca central */
+    .card {
       background: #fff;
-      border-radius: 25px;
-      overflow: hidden;
-      box-shadow: 0 15px 40px rgba(0,0,0,0.2);
-    }
-    .left {
-      background: url('https://images.unsplash.com/photo-1559622214-f8a9850965bb') center/cover;
-      position: relative;
-    }
-    .left::after {
-      content: "";
-      position: absolute;
       width: 100%;
-      height: 100%;
-      background: rgba(255, 150, 150, 0.3);
+      max-width: 400px;
+      border-radius: 30px;
+      padding: 40px 25px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+      text-align: center;
     }
-    .right { padding: 40px; text-align: center; }
-    h2 { color: #7a3e2d; margin-bottom: 10px; }
-    p { color: #777; margin-bottom: 20px; }
+
+    .icon-top { font-size: 3rem; color: #ff6f61; margin-bottom: 10px; }
+    h2 { color: #7a3e2d; font-size: 2rem; margin-bottom: 5px; }
+    p { color: #777; margin-bottom: 25px; font-size: 1rem; }
+
+    /* Campos de texto grandes */
     input {
       width: 100%;
-      padding: 12px;
+      padding: 16px;
       margin: 10px 0;
-      border-radius: 10px;
-      border: 1px solid #ddd;
+      border-radius: 15px;
+      border: 1px solid #eee;
+      background: #fafafa;
       outline: none;
+      font-size: 1.05rem;
+      transition: 0.3s;
     }
+    input:focus { border-color: #ff6f61; background: #fff; }
+
+    /* Botón grande estilo App */
     .btn {
       width: 100%;
-      padding: 12px;
+      padding: 16px;
       background: #ff6f61;
       color: white;
       border: none;
-      border-radius: 10px;
-      margin-top: 10px;
+      border-radius: 30px;
+      margin-top: 20px;
       cursor: pointer;
       font-weight: bold;
-      font-size: 16px;
+      font-size: 1.1rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 8px 20px rgba(255,111,97,0.3);
+      transition: 0.3s;
     }
-    .btn:hover {
-      background: #e05a4f;
-    }
-    .link { margin-top: 15px; font-size: 14px; }
+    .btn:active { transform: scale(0.98); }
+
+    .link { margin-top: 25px; font-size: 0.95rem; color: #777; }
     .link a { color: #ff6f61; text-decoration: none; font-weight: bold; }
-  /* DISEÑO PARA CELULARES */
-/* DISEÑO EXCLUSIVO PARA CELULARES (PANTALLA COMPLETA) */
-@media (max-width: 768px) {
-  html, body { 
-    height: 100%; 
-    width: 100%;
-    margin: 0; 
-    padding: 0; 
-    overflow: hidden; /* Evita el scroll */
-    background: #fff; 
-  }
-  .container { 
-    grid-template-columns: 1fr; 
-    width: 100vw; 
-    height: 100dvh; /* Altura dinámica perfecta para celulares */
-    margin: 0; 
-    border-radius: 0; 
-    box-shadow: none; 
-  }
-  .left { display: none; } /* Ocultamos la imagen */
-  .right { 
-    padding: 30px 25px; 
-    justify-content: center; 
-    height: 100%; 
-    display: flex;
-    flex-direction: column;
-  }
-  h2 { font-size: 2.2rem; margin-top: auto; }
-  p { font-size: 1.2rem; }
-  input { 
-    font-size: 1.1rem; 
-    padding: 16px; 
-    margin: 12px 0; 
-  }
-  .btn { 
-    font-size: 1.2rem; 
-    padding: 16px; 
-    margin-top: 20px; 
-  }
-  .link { margin-bottom: auto; }
-}
   </style>
 </head>
 <body>
-<div class="container">
-  <div class="left"></div>
-  <div class="right">
-    <h2>🔐 Iniciar Sesión</h2>
-    <p>Bienvenido de nuevo 🍰</p>
-    <input type="email" id="correo" placeholder="Correo electrónico">
-    <input type="password" id="password" placeholder="Contraseña">
-    <button class="btn" onclick="iniciarSesion()">Entrar</button>
-    <div class="link">
-      ¿No tienes cuenta? <a href="registro.html">Registrarse</a>
-    </div>
+
+<div class="card">
+  <i class="fas fa-user-circle icon-top"></i>
+  <h2>Iniciar Sesión</h2>
+  <p>¡Bienvenido de nuevo! 🍰</p>
+  
+  <input type="email" id="correo" placeholder="Correo electrónico">
+  <input type="password" id="password" placeholder="Contraseña">
+  
+  <button class="btn" onclick="iniciarSesion()">
+    Entrar <i class="fas fa-arrow-right"></i>
+  </button>
+  
+  <div class="link">
+    ¿No tienes cuenta? <a href="registro.html">Regístrate aquí</a>
   </div>
 </div>
 
@@ -125,7 +97,7 @@
     const password = document.getElementById("password").value.trim();
 
     if (!correo || !password) {
-      alert("❌ Por favor, completa todos los campos");
+      alert("❌ Completa todos los campos");
       return;
     }
 
@@ -139,24 +111,22 @@
       if (res.ok) {
         const data = await res.json();
         alert(data.mensaje);
-        
         localStorage.setItem("usuario", JSON.stringify({
           nombre: data.nombre,
           rol: data.rol,
           correo: correo
         }));
-
         if (data.rol === "Administrador") {
           window.location.href = "/admin";
         } else {
           window.location.href = "/cliente";
         }
       } else {
-        const error = await res.text();
-        alert("❌ " + error);
+        const error = await res.json();
+        alert("❌ " + (error.error || "Credenciales incorrectas"));
       }
     } catch (error) {
-      alert("❌ Error de conexión: " + error.message);
+      alert("❌ Error de conexión con el servidor");
     }
   }
 </script>

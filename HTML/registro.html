@@ -3,103 +3,96 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Registro - Pastelería</title>
+  <title>Crear Cuenta - Pastelería</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+    
     body {
       background: linear-gradient(135deg, #ffe6d9, #ffd6cc);
-      height: 100vh;
+      min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
+      padding: 20px;
     }
-    .container {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      width: 900px;
+
+    /* Tarjeta blanca central */
+    .card {
       background: #fff;
-      border-radius: 25px;
-      overflow: hidden;
-      box-shadow: 0 15px 40px rgba(0,0,0,0.2);
-    }
-    .left {
-      background: url('https://images.unsplash.com/photo-1578985545062-69928b1d9587') center/cover;
-      position: relative;
-    }
-    .left::after {
-      content: "";
-      position: absolute;
       width: 100%;
-      height: 100%;
-      background: rgba(255, 150, 150, 0.3);
+      max-width: 400px;
+      border-radius: 30px;
+      padding: 40px 25px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+      text-align: center;
     }
-    .right { padding: 40px; text-align: center; }
-    h2 { color: #7a3e2d; margin-bottom: 10px; }
-    p { color: #777; margin-bottom: 20px; }
+
+    .icon-top { font-size: 3rem; color: #f7b267; margin-bottom: 10px; }
+    h2 { color: #7a3e2d; font-size: 2rem; margin-bottom: 5px; }
+    p { color: #777; margin-bottom: 25px; font-size: 1rem; }
+
+    /* Campos de texto grandes */
     input {
       width: 100%;
-      padding: 12px;
+      padding: 16px;
       margin: 8px 0;
-      border-radius: 10px;
-      border: 1px solid #ddd;
+      border-radius: 15px;
+      border: 1px solid #eee;
+      background: #fafafa;
       outline: none;
+      font-size: 1.05rem;
+      transition: 0.3s;
     }
+    input:focus { border-color: #f7b267; background: #fff; }
+
+    /* Botón grande estilo App */
     .btn {
       width: 100%;
-      padding: 12px;
+      padding: 16px;
       background: #f7b267;
       color: white;
       border: none;
-      border-radius: 10px;
-      margin-top: 10px;
+      border-radius: 30px;
+      margin-top: 20px;
       cursor: pointer;
       font-weight: bold;
+      font-size: 1.1rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 8px 20px rgba(247,178,103,0.3);
+      transition: 0.3s;
     }
-    .link { margin-top: 15px; font-size: 14px; }
-    .link a { color: #ff6f61; text-decoration: none; font-weight: bold; }
+    .btn:active { transform: scale(0.98); }
 
-    /* DISEÑO PARA CELULARES */
-    @media (max-width: 768px) {
-      .container { grid-template-columns: 1fr; width: 90%; margin: 20px auto; }
-      .left { display: none; }
-      body { height: auto; padding: 20px; align-items: flex-start; }
-    }
+    .link { margin-top: 25px; font-size: 0.95rem; color: #777; }
+    .link a { color: #ff6f61; text-decoration: none; font-weight: bold; }
   </style>
 </head>
 <body>
-<div class="container">
-  <div class="left"></div>
-  <div class="right">
-    <h2>Crear Cuenta</h2>
-    <p>Únete a nuestra pastelería 🍰</p>
-    <input id="nombre" type="text" placeholder="Nombre">
-    <input id="correo" type="email" placeholder="Correo">
-    <input id="password" type="password" placeholder="Contraseña">
-    <!-- El selector de roles ha sido eliminado de la vista -->
-    <button class="btn" onclick="registrar()">Registrarse</button>
-    <div class="link">
-      ¿Ya tienes cuenta? <a href="login.html">Iniciar sesión</a>
-    </div>
+
+<div class="card">
+  <i class="fas fa-user-plus icon-top"></i>
+  <h2>Crear Cuenta</h2>
+  <p>Únete a nuestra pastelería 🍰</p>
+  
+  <input id="nombre" type="text" placeholder="Nombre completo">
+  <input id="correo" type="email" placeholder="Correo electrónico">
+  <input id="password" type="password" placeholder="Contraseña">
+  
+  <button class="btn" onclick="registrar()">
+    Registrarse <i class="fas fa-arrow-right"></i>
+  </button>
+  
+  <div class="link">
+    ¿Ya tienes cuenta? <a href="login.html">Inicia sesión</a>
   </div>
 </div>
+
 <script>
-  let idRolCliente = null;
-
-  // Cargamos los roles en secreto para obtener el ID del Cliente
-  async function obtenerRolCliente() {
-    try {
-      const res = await fetch("/roles");
-      const roles = await res.json();
-      const rolCliente = roles.find(r => r.nombre === "Cliente");
-      if (rolCliente) {
-        idRolCliente = rolCliente._id;
-      }
-    } catch (error) {
-      console.error("Error al preparar el registro", error);
-    }
-  }
-
   async function registrar() {
     const nombre = document.getElementById("nombre").value.trim();
     const correo = document.getElementById("correo").value.trim();
@@ -110,39 +103,31 @@
       return;
     }
 
-    if (!idRolCliente) {
-      alert("❌ Hubo un problema con el servidor. Intenta de nuevo.");
-      return;
-    }
-
     try {
-      // Enviamos el idRolCliente automáticamente
+      const resRoles = await fetch("/roles");
+      const roles = await resRoles.json();
+      const rolCliente = roles.find(r => r.nombre === "Cliente");
+      
+      if (!rolCliente) {
+        alert("Error interno: Rol no encontrado");
+        return;
+      }
+
       const res = await fetch("/registro", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nombre, correo, password, rolId: idRolCliente })
+        body: JSON.stringify({ nombre, correo, password, rolId: rolCliente._id })
       });
 
+      const data = await res.text();
+      alert(data);
       if (res.ok) {
-        const data = await res.json();
-        alert(data.mensaje);
-        localStorage.setItem("usuario", JSON.stringify({
-          nombre: data.nombre,
-          rol: data.rol,
-          correo: correo
-        }));
-        window.location.href = "/cliente";
-      } else {
-        const error = await res.json();
-        alert("❌ " + (error.error || "Error al registrarse"));
+        window.location.href = "login.html";
       }
     } catch (error) {
-      alert("❌ Error de conexión con el servidor");
+      alert("❌ Error de conexión");
     }
   }
-
-  // Ejecutamos la función al abrir la página
-  obtenerRolCliente();
 </script>
 </body>
 </html>
