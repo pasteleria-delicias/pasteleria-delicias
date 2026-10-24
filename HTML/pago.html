@@ -82,7 +82,7 @@
     }));
 
     try {
-      const res = await fetch('http://localhost:3000/ventas', {
+      const res = await fetch('/ventas', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

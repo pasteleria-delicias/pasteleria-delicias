@@ -86,7 +86,7 @@
   // Cargar roles desde el servidor
   async function cargarRoles() {
     try {
-      const res = await fetch("http://localhost:3000/roles");
+      const res = await fetch("/roles");
       const roles = await res.json();
       const select = document.getElementById("rol");
       select.innerHTML = '<option value="">Selecciona un rol</option>';
@@ -119,7 +119,7 @@
     }
 
     try {
-      const res = await fetch("http://localhost:3000/registro", {
+      const res = await fetch("/registro", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ nombre, correo, password, rolId })
