@@ -27,14 +27,14 @@
     .modal-contenido button { width: 100%; padding: 10px; background: #ff6f61; color: white; border: none; border-radius: 8px; margin-top: 10px; cursor: pointer; }
     .cerrar { background: #aaa !important; }
   /* DISEÑO PARA CELULARES Y TABLETS */
-@media (max-width: 1024px) {
-  .productos-grid { grid-template-columns: repeat(2, 1fr); } 
-}
 @media (max-width: 768px) {
-  .productos-grid { grid-template-columns: 1fr; } 
-  .header { flex-direction: column; text-align: center; }
+  .container { border-radius: 15px; }
+  .header { flex-direction: column; text-align: center; padding: 15px; }
   .nav-buttons { justify-content: center; }
   .titulo-seccion { flex-direction: column; gap: 10px; align-items: stretch; }
+  .productos-grid { grid-template-columns: 1fr; }
+  .producto-img { height: 200px; }
+  .admin-body { padding: 15px; }
 }
   </style>
 </head>

@@ -51,13 +51,28 @@
     .registro { background: #f7b267; color: white; }
     .footer { margin-top: 20px; font-size: 12px; color: #aaa; }
   /* DISEÑO PARA CELULARES */
+/* DISEÑO PARA CELULARES */
 @media (max-width: 768px) {
-  .container { padding: 15px; width: 95%; margin: 10px auto; }
-  h1 { font-size: 1.5rem; }
-  .resumen { padding: 15px; }
-  .resumen-item { flex-direction: column; gap: 5px; text-align: center; }
-  .form-pago input { font-size: 0.9rem; padding: 10px; }
-  .btn-pagar, .btn-volver { padding: 10px; font-size: 0.9rem; }
+  .container { 
+    grid-template-columns: 1fr; 
+    width: 95%; 
+    margin: 20px auto; 
+    border-radius: 15px;
+  }
+  .left { 
+    display: none; /* Ocultamos la imagen del pastel para que quepa el texto */
+  }
+  body { 
+    height: auto; 
+    padding: 20px; 
+    align-items: flex-start; 
+  }
+  .right { 
+    padding: 20px; 
+  }
+  h1 { 
+    font-size: 1.8rem; 
+  }
 }
   </style>
 </head>
