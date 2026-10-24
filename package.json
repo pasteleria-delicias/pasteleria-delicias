@@ -1,0 +1,23 @@
+{
+  "name": "proyectopastel4",
+  "version": "1.0.0",
+  "description": "Pastelería - Registro y Login",
+  "main": "Servidor/ENU/Server.js",
+  "scripts": {
+    "start": "node Servidor/ENU/Server.js",
+    "dev": "nodemon Servidor/ENU/Server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "mongoose": "^9.6.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}

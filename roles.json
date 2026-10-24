@@ -1,0 +1,10 @@
+[
+  {
+    "nombre": "Administrador",
+    "descripcion": "Acceso total al panel de administración"
+  },
+  {
+    "nombre": "Cliente",
+    "descripcion": "Acceso al menú público y carrito de compras"
+  }
+]

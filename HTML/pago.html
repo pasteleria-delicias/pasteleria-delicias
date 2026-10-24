@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Proceso de Pago - Pastelería</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+    body { background: linear-gradient(135deg, #ffe6d9, #ffd6cc); padding: 40px 20px; }
+    .container { max-width: 800px; margin: auto; background: white; border-radius: 25px; padding: 30px; box-shadow: 0 15px 40px rgba(0,0,0,0.1); }
+    h1 { color: #7a3e2d; text-align: center; margin-bottom: 10px; }
+    .subtitulo { text-align: center; color: #777; margin-bottom: 30px; }
+    .resumen { background: #fff9f7; border-radius: 20px; padding: 20px; margin-bottom: 30px; }
+    .resumen-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #ffe0d4; }
+    .total { font-size: 1.2rem; font-weight: bold; color: #ff6f61; margin-top: 15px; padding-top: 10px; border-top: 2px solid #ffe0d4; }
+    .form-pago input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid #ddd; }
+    .btn-pagar { background: #ff6f61; color: white; border: none; padding: 15px; border-radius: 40px; width: 100%; margin-top: 20px; cursor: pointer; font-weight: bold; font-size: 1.1rem; }
+    .btn-volver { background: #f7b267; color: white; border: none; padding: 12px; border-radius: 40px; width: 100%; margin-top: 10px; cursor: pointer; }
+    .mensaje { text-align: center; padding: 20px; background: #d4edda; color: #155724; border-radius: 10px; margin-top: 20px; display: none; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1><i class="fas fa-credit-card"></i> Proceso de Pago</h1>
+  <div class="subtitulo">Completa tus datos para finalizar la compra</div>
+
+  <div class="resumen" id="resumen"></div>
+
+  <div class="form-pago">
+    <input type="text" id="nombreCompleto" placeholder="Nombre completo" required>
+    <input type="tel" id="telefono" placeholder="Teléfono" required>
+    <input type="text" id="direccion" placeholder="Dirección de envío" required>
+  </div>
+
+  <button class="btn-pagar" onclick="procesarPago()"><i class="fas fa-check-circle"></i> Confirmar Pago</button>
+  <button class="btn-volver" onclick="volver()"><i class="fas fa-arrow-left"></i> Volver al Carrito</button>
+
+  <div id="mensaje" class="mensaje"></div>
+</div>
+
+<script>
+  const usuario = JSON.parse(localStorage.getItem('usuario'));
+  let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+
+  if (!usuario) {
+    window.location.href = 'login.html';
+  }
+
+  if (carrito.length === 0) {
+    document.getElementById('resumen').innerHTML = '<p>No hay productos en el carrito</p>';
+  } else {
+    let total = 0;
+    let html = '<h3>Resumen de compra</h3>';
+    carrito.forEach(item => {
+      total += item.precio * item.cantidad;
+      html += `<div class="resumen-item">
+        <span>${item.nombre} x ${item.cantidad}</span>
+        <span>$${(item.precio * item.cantidad).toFixed(2)}</span>
+      </div>`;
+    });
+    html += `<div class="total">Total a pagar: $${total.toFixed(2)}</div>`;
+    document.getElementById('resumen').innerHTML = html;
+  }
+
+  async function procesarPago() {
+    const nombre = document.getElementById('nombreCompleto').value;
+    const telefono = document.getElementById('telefono').value;
+    const direccion = document.getElementById('direccion').value;
+
+    if (!nombre || !telefono || !direccion) {
+      alert('Completa todos los campos');
+      return;
+    }
+
+    const total = carrito.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
+    const productosParaBD = carrito.map(item => ({
+      id: item.id,
+      nombre: item.nombre,
+      precio: item.precio,
+      cantidad: item.cantidad
+    }));
+
+    try {
+      const res = await fetch('http://localhost:3000/ventas', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          usuario: usuario.nombre,
+          correo: usuario.correo,
+          productos: productosParaBD,
+          total: total
+        })
+      });
+
+      if (res.ok) {
+        localStorage.removeItem('carrito');
+        const mensajeDiv = document.getElementById('mensaje');
+        mensajeDiv.innerHTML = '<i class="fas fa-check-circle"></i> ¡Pago exitoso! Tu pedido ha sido registrado. Gracias por tu compra.';
+        mensajeDiv.style.display = 'block';
+        setTimeout(() => {
+          window.location.href = 'cliente.html';
+        }, 3000);
+      } else {
+        alert('Error al procesar el pago');
+      }
+    } catch (error) {
+      alert('Error de conexión');
+    }
+  }
+
+  function volver() {
+    window.location.href = 'cliente.html';
+  }
+</script>
+</body>
+</html>

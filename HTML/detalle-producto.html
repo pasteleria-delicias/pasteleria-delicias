@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Detalle del Producto - Pastelería</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+    body { background: linear-gradient(135deg, #ffe6d9, #ffd6cc); padding: 40px 20px; }
+    .container { max-width: 1000px; margin: auto; background: white; border-radius: 25px; overflow: hidden; box-shadow: 0 15px 40px rgba(0,0,0,0.1); }
+    .header { background: #fff9f7; padding: 20px 30px; display: flex; justify-content: space-between; align-items: center; }
+    .logo h2 { color: #7a3e2d; }
+    .logo span { color: #ff6f61; }
+    .btn-volver { background: #f7b267; color: white; border: none; padding: 8px 20px; border-radius: 40px; cursor: pointer; }
+    .detalle-content { display: flex; padding: 30px; gap: 30px; flex-wrap: wrap; }
+    .detalle-imagen { flex: 1; text-align: center; }
+    .detalle-imagen img { width: 100%; max-width: 400px; border-radius: 20px; }
+    .detalle-info { flex: 1; }
+    .detalle-info h1 { color: #7a3e2d; margin-bottom: 15px; }
+    .detalle-precio { font-size: 2rem; color: #ff6f61; font-weight: bold; margin: 15px 0; }
+    .detalle-stock { color: #555; margin-bottom: 20px; }
+    .cantidad-selector { display: flex; align-items: center; gap: 15px; margin: 20px 0; }
+    .cantidad-selector input { width: 80px; padding: 10px; border-radius: 10px; border: 1px solid #ddd; text-align: center; font-size: 1rem; }
+    .btn-agregar { background: #ff6f61; color: white; border: none; padding: 12px 30px; border-radius: 40px; cursor: pointer; font-weight: bold; width: 100%; }
+    .footer { text-align: center; padding: 20px; background: #fff9f7; color: #aa8a7a; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="logo"><h2>🍰 <span>Pastelería</span> Delicia</h2></div>
+    <button class="btn-volver" onclick="volver()"><i class="fas fa-arrow-left"></i> Volver</button>
+  </div>
+  <div class="detalle-content" id="detalleContent">
+    <div style="text-align:center; width:100%;">Cargando producto...</div>
+  </div>
+  <div class="footer">❤️ Gracias por tu preferencia</div>
+</div>
+<script>
+  const API_PRODUCTOS = 'http://localhost:3000/productos';
+  let producto = null;
+
+  async function cargarProducto() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get('id');
+    if (!id) {
+      document.getElementById('detalleContent').innerHTML = '<div style="text-align:center; width:100%;">Producto no encontrado</div>';
+      return;
+    }
+    try {
+      const res = await fetch(`${API_PRODUCTOS}/${id}`);
+      producto = await res.json();
+      renderizarDetalle();
+    } catch (error) {
+      document.getElementById('detalleContent').innerHTML = '<div style="text-align:center; width:100%;">Error cargando producto</div>';
+    }
+  }
+
+  function renderizarDetalle() {
+    const container = document.getElementById('detalleContent');
+    container.innerHTML = `
+      <div class="detalle-imagen">
+        <img src="${producto.imagenUrl || 'https://via.placeholder.com/400'}" onerror="this.src='https://via.placeholder.com/400'">
+      </div>
+      <div class="detalle-info">
+        <h1>${escapeHtml(producto.nombre)}</h1>
+        <p>${escapeHtml(producto.descripcion)}</p>
+        <div class="detalle-precio">$${producto.precio.toFixed(2)}</div>
+        <div class="detalle-stock"><i class="fas fa-box"></i> Stock disponible: ${producto.cantidad}</div>
+        <div class="cantidad-selector">
+          <label>Cantidad:</label>
+          <input type="number" id="cantidad" value="1" min="1" max="${producto.cantidad}">
+        </div>
+        <button class="btn-agregar" onclick="agregarAlCarrito()"><i class="fas fa-cart-plus"></i> Agregar al Carrito</button>
+      </div>
+    `;
+  }
+
+  function agregarAlCarrito() {
+    let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+    const cantidad = parseInt(document.getElementById('cantidad').value);
+    const existente = carrito.find(item => item.id === producto._id);
+    if (existente) {
+      existente.cantidad += cantidad;
+    } else {
+      carrito.push({ id: producto._id, nombre: producto.nombre, precio: producto.precio, cantidad: cantidad, imagen: producto.imagenUrl });
+    }
+    localStorage.setItem('carrito', JSON.stringify(carrito));
+    alert(`${producto.nombre} agregado al carrito`);
+    window.location.href = 'cliente.html';
+  }
+
+  function volver() { window.location.href = 'cliente.html'; }
+  function escapeHtml(str) { return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;'); }
+  cargarProducto();
+</script>
+</body>
+</html>
