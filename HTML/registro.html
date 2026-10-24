@@ -18,29 +18,44 @@
       padding: 30px 20px;
     }
 
-    /* Encabezado idéntico a la imagen */
-    .header-text { text-align: center; margin-bottom: 25px; }
-    .header-text .icon-cupcake { font-size: 2.5rem; color: #d35400; margin-bottom: 5px; }
-    .header-text h1 { color: #7a3e2d; font-size: 1.8rem; font-weight: 500; line-height: 1.2; }
-    .header-text h1 span { 
-      display: block; 
-      font-family: 'Pacifico', cursive; 
-      color: #ff6f61; 
-      font-size: 3.5rem; 
-      font-weight: normal;
-      margin-top: -5px;
-    }
-    .header-text p { color: #777; font-size: 1rem; margin-top: 10px; }
+    /* Encabezado adaptado para verse grande en PC y perfecto en celular */
+.header-text { text-align: center; margin-bottom: 30px; }
 
-    /* Tarjeta blanca central */
-    .card {
-      background: #fff;
-      width: 100%;
-      max-width: 400px;
-      border-radius: 30px;
-      padding: 20px;
-      box-shadow: 0 15px 40px rgba(0,0,0,0.1);
-    }
+.header-text .icon-cupcake { 
+  font-size: 4rem; /* Icono más grande */
+  color: #d35400; 
+  margin-bottom: 10px; 
+}
+
+.header-text h1 { 
+  color: #7a3e2d; 
+  font-size: 3rem; /* Letra más grande para PC */
+  font-weight: 500; 
+  line-height: 1.2; 
+}
+
+.header-text h1 span { 
+  display: block; 
+  font-family: 'Pacifico', cursive; 
+  color: #ff6f61; 
+  font-size: 5.5rem; /* "Pastelería" gigante para PC */
+  font-weight: normal;
+  margin-top: 0px;
+}
+
+.header-text p { 
+  color: #777; 
+  font-size: 1.5rem; /* Subtítulo más grande */
+  margin-top: 15px; 
+}
+
+/* Ajuste para que en celulares se vea grandote pero sin salirse de la pantalla */
+@media (max-width: 768px) {
+  .header-text .icon-cupcake { font-size: 3rem; }
+  .header-text h1 { font-size: 2rem; }
+  .header-text h1 span { font-size: 4rem; } /* Tamaño ideal para el celular */
+  .header-text p { font-size: 1.1rem; }
+}
 
     /* Imagen del pastel */
     .card-image {
