@@ -34,13 +34,49 @@
     tr:hover { background: #fff0e8; }
     .producto-img { width: 50px; height: 50px; object-fit: cover; border-radius: 10px; }
     
-    /* DISEÑO PARA CELULARES */
-    @media (max-width: 768px) {
-      .container { padding: 15px; }
-      h1 { font-size: 1.5rem; }
-      .botones-exportar { flex-direction: column; }
-      .btn { width: 100%; justify-content: center; }
-    }
+   /* DISEÑO PARA CELULARES */
+@media (max-width: 768px) {
+  .container { padding: 15px; }
+  h1 { font-size: 1.5rem; }
+  .botones-exportar { flex-direction: column; }
+  .btn { width: 100%; justify-content: center; }
+  
+  /* Convertir tabla en tarjetas */
+  table { min-width: 100%; display: block; }
+  thead { display: none; }
+  tbody { display: block; }
+  
+  tr { 
+    display: block; 
+    margin-bottom: 15px; 
+    background: #fff9f7; 
+    border-radius: 15px; 
+    padding: 15px;
+    border: 1px solid #ffe0d4;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  }
+  
+  td { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    padding: 8px 0; 
+    border-bottom: 1px solid #ffe0d4; 
+    font-size: 1rem;
+    text-align: right;
+  }
+  td:last-child { border-bottom: none; }
+  
+  /* Etiquetas para cada dato en el celular */
+  td::before { 
+    content: attr(data-label); 
+    font-weight: bold; 
+    color: #7a3e2d; 
+    text-align: left;
+  }
+  
+  .producto-img { width: 60px; height: 60px; margin-left: auto; }
+}
   </style>
 </head>
 <body>
@@ -89,14 +125,14 @@
       }
 
       tbody.innerHTML = productos.map(p => `
-        <tr>
-          <td><img class="producto-img" src="${p.imagenUrl || 'https://via.placeholder.com/50'}" onerror="this.src='https://via.placeholder.com/50'"></td>
-          <td><strong>${p.nombre}</strong></td>
-          <td>${p.descripcion}</td>
-          <td>$${p.precio.toFixed(2)}</td>
-          <td>${p.cantidad}</td>
-        </tr>
-      `).join('');
+  <tr>
+    <td data-label="Imagen"><img class="producto-img" src="${p.imagenUrl || 'https://via.placeholder.com/50'}" onerror="this.src='https://via.placeholder.com/50'"></td>
+    <td data-label="Nombre"><strong>${p.nombre}</strong></td>
+    <td data-label="Descripción">${p.descripcion}</td>
+    <td data-label="Precio">$${p.precio.toFixed(2)}</td>
+    <td data-label="Cantidad">${p.cantidad}</td>
+  </tr>
+`).join('');
     } catch (error) {
       document.getElementById('tbodyProductos').innerHTML = '<tr><td colspan="5" style="padding: 30px; color: red;">Error al cargar productos</td></tr>';
     }
