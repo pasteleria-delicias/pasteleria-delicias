@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reporte de Productos - Pastelería</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- Librerías para exportar -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+    body { background: linear-gradient(135deg, #ffe6d9, #ffd6cc); padding: 20px; min-height: 100vh; }
+    .container { max-width: 1200px; margin: auto; background: white; border-radius: 25px; padding: 30px; box-shadow: 0 15px 40px rgba(0,0,0,0.1); }
+    
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px; }
+    h1 { color: #7a3e2d; display: flex; align-items: center; gap: 10px; font-size: 1.8rem; }
+    .btn-volver { background: #f7b267; color: white; border: none; padding: 10px 20px; border-radius: 40px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+    
+    .botones-exportar { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
+    .btn { padding: 10px 20px; border: none; border-radius: 40px; cursor: pointer; font-weight: bold; color: white; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s; }
+    .btn-excel { background: #1e7e34; }
+    .btn-pdf { background: #dc3545; }
+    .btn-word { background: #0078d7; }
+    .btn:hover { transform: scale(1.02); opacity: 0.9; }
+
+    .tabla-container { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; background: #fff9f7; border-radius: 15px; overflow: hidden; min-width: 700px; }
+    th { background: #ff6f61; color: white; padding: 15px; text-align: center; font-weight: 600; }
+    td { padding: 12px; border-bottom: 1px solid #ffe0d4; text-align: center; vertical-align: middle; font-size: 0.9rem; }
+    tr:hover { background: #fff0e8; }
+    .producto-img { width: 50px; height: 50px; object-fit: cover; border-radius: 10px; }
+    
+    /* DISEÑO PARA CELULARES */
+    @media (max-width: 768px) {
+      .container { padding: 15px; }
+      h1 { font-size: 1.5rem; }
+      .botones-exportar { flex-direction: column; }
+      .btn { width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1><i class="fas fa-chart-line"></i> Reporte de Productos</h1>
+    <a href="/admin" class="btn-volver"><i class="fas fa-arrow-left"></i> Volver al Admin</a>
+  </div>
+
+  <div class="botones-exportar">
+    <button class="btn btn-excel" onclick="exportarExcel()"><i class="fas fa-file-excel"></i> Descargar Excel</button>
+    <button class="btn btn-pdf" onclick="exportarPDF()"><i class="fas fa-file-pdf"></i> Descargar PDF</button>
+    <button class="btn btn-word" onclick="exportarWord()"><i class="fas fa-file-word"></i> Descargar Word</button>
+  </div>
+
+  <div class="tabla-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Imagen</th>
+          <th>Nombre</th>
+          <th>Descripción</th>
+          <th>Precio (MXN)</th>
+          <th>Cantidad</th>
+        </tr>
+      </thead>
+      <tbody id="tbodyProductos">
+        <tr><td colspan="5" style="padding: 30px;">Cargando productos...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  let productos = [];
+
+  async function cargarProductos() {
+    try {
+      const res = await fetch('/productos');
+      productos = await res.json();
+      const tbody = document.getElementById('tbodyProductos');
+      
+      if (productos.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="padding: 30px;">No hay productos registrados.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = productos.map(p => `
+        <tr>
+          <td><img class="producto-img" src="${p.imagenUrl || 'https://via.placeholder.com/50'}" onerror="this.src='https://via.placeholder.com/50'"></td>
+          <td><strong>${p.nombre}</strong></td>
+          <td>${p.descripcion}</td>
+          <td>$${p.precio.toFixed(2)}</td>
+          <td>${p.cantidad}</td>
+        </tr>
+      `).join('');
+    } catch (error) {
+      document.getElementById('tbodyProductos').innerHTML = '<tr><td colspan="5" style="padding: 30px; color: red;">Error al cargar productos</td></tr>';
+    }
+  }
+
+  function exportarExcel() {
+    const datos = productos.map(p => ({
+      'Nombre': p.nombre,
+      'Descripción': p.descripcion,
+      'Precio': p.precio,
+      'Cantidad': p.cantidad
+    }));
+    const ws = XLSX.utils.json_to_sheet(datos);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Productos');
+    XLSX.writeFile(wb, `Reporte_Productos_${new Date().toLocaleDateString()}.xlsx`);
+  }
+
+  function exportarPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation: 'landscape' });
+    doc.text('Reporte de Productos - Pastelería Delicia', 14, 15);
+    const columnas = ['Nombre', 'Descripción', 'Precio', 'Cantidad'];
+    const filas = productos.map(p => [
+      p.nombre,
+      p.descripcion.length > 50 ? p.descripcion.substring(0, 50) + '...' : p.descripcion,
+      '$' + p.precio.toFixed(2),
+      p.cantidad
+    ]);
+    doc.autoTable({
+      head: [columnas],
+      body: filas,
+      startY: 25,
+      headStyles: { fillColor: [255, 111, 97] }
+    });
+    doc.save(`Reporte_Productos_${new Date().toLocaleDateString()}.pdf`);
+  }
+
+  function exportarWord() {
+    let html = `
+      <html>
+      <head><meta charset="UTF-8"><title>Reporte de Productos</title></head>
+      <body>
+        <h1 style="color: #7a3e2d;">Reporte de Productos - Pastelería Delicia</h1>
+        <p>Fecha: ${new Date().toLocaleString()}</p>
+        <table border="1" style="border-collapse: collapse; width: 100%; text-align: center;">
+          <tr style="background-color: #ff6f61; color: white;">
+            <th>Nombre</th><th>Descripción</th><th>Precio</th><th>Cantidad</th>
+          </tr>
+          ${productos.map(p => `
+            <tr>
+              <td>${p.nombre}</td><td>${p.descripcion}</td><td>$${p.precio.toFixed(2)}</td><td>${p.cantidad}</td>
+            </tr>
+          `).join('')}
+        </table>
+      </body>
+      </html>
+    `;
+    const blob = new Blob([html], { type: 'application/msword' });
+    saveAs(blob, `Reporte_Productos_${new Date().toLocaleDateString()}.doc`);
+  }
+
+  cargarProductos();
+</script>
+</body>
+</html>

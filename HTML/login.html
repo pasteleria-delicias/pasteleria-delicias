@@ -61,6 +61,12 @@
     }
     .link { margin-top: 15px; font-size: 14px; }
     .link a { color: #ff6f61; text-decoration: none; font-weight: bold; }
+  /* DISEÑO PARA CELULARES */
+@media (max-width: 768px) {
+  .container { grid-template-columns: 1fr; width: 90%; margin: 20px auto; }
+  .left { display: none; }
+  body { height: auto; padding: 20px; align-items: flex-start; }
+}
   </style>
 </head>
 <body>

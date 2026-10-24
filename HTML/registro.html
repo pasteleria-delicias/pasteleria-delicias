@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Registro - Pastelería</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
   <style>
@@ -36,7 +37,7 @@
     .right { padding: 40px; text-align: center; }
     h2 { color: #7a3e2d; margin-bottom: 10px; }
     p { color: #777; margin-bottom: 20px; }
-    input, select {
+    input {
       width: 100%;
       padding: 12px;
       margin: 8px 0;
@@ -54,87 +55,94 @@
       margin-top: 10px;
       cursor: pointer;
       font-weight: bold;
-      font-size: 16px;
-    }
-    .btn:hover {
-      background: #e09d46;
     }
     .link { margin-top: 15px; font-size: 14px; }
     .link a { color: #ff6f61; text-decoration: none; font-weight: bold; }
+
+    /* DISEÑO PARA CELULARES */
+    @media (max-width: 768px) {
+      .container { grid-template-columns: 1fr; width: 90%; margin: 20px auto; }
+      .left { display: none; }
+      body { height: auto; padding: 20px; align-items: flex-start; }
+    }
   </style>
 </head>
 <body>
 <div class="container">
   <div class="left"></div>
   <div class="right">
-    <h2>📝 Crear Cuenta</h2>
+    <h2>Crear Cuenta</h2>
     <p>Únete a nuestra pastelería 🍰</p>
-    <input id="nombre" type="text" placeholder="Nombre completo">
-    <input id="correo" type="email" placeholder="Correo electrónico">
+    <input id="nombre" type="text" placeholder="Nombre">
+    <input id="correo" type="email" placeholder="Correo">
     <input id="password" type="password" placeholder="Contraseña">
-    <select id="rol">
-      <option value="">Cargando roles...</option>
-    </select>
+    <!-- El selector de roles ha sido eliminado de la vista -->
     <button class="btn" onclick="registrar()">Registrarse</button>
     <div class="link">
       ¿Ya tienes cuenta? <a href="login.html">Iniciar sesión</a>
     </div>
   </div>
 </div>
-
 <script>
-  // Cargar roles desde el servidor
-  async function cargarRoles() {
+  let idRolCliente = null;
+
+  // Cargamos los roles en secreto para obtener el ID del Cliente
+  async function obtenerRolCliente() {
     try {
       const res = await fetch("/roles");
       const roles = await res.json();
-      const select = document.getElementById("rol");
-      select.innerHTML = '<option value="">Selecciona un rol</option>';
-      roles.forEach(rol => {
-        const option = document.createElement("option");
-        option.value = rol._id;
-        option.textContent = rol.nombre;
-        select.appendChild(option);
-      });
+      const rolCliente = roles.find(r => r.nombre === "Cliente");
+      if (rolCliente) {
+        idRolCliente = rolCliente._id;
+      }
     } catch (error) {
-      console.error("Error:", error);
-      document.getElementById("rol").innerHTML = '<option value="">Error al cargar roles</option>';
+      console.error("Error al preparar el registro", error);
     }
   }
 
-  // Registrar usuario
   async function registrar() {
     const nombre = document.getElementById("nombre").value.trim();
     const correo = document.getElementById("correo").value.trim();
     const password = document.getElementById("password").value.trim();
-    const rolId = document.getElementById("rol").value;
 
     if (!nombre || !correo || !password) {
-      alert("❌ Por favor, completa todos los campos");
+      alert("❌ Completa todos los campos");
       return;
     }
-    if (!rolId) {
-      alert("❌ Por favor, selecciona un rol");
+
+    if (!idRolCliente) {
+      alert("❌ Hubo un problema con el servidor. Intenta de nuevo.");
       return;
     }
 
     try {
+      // Enviamos el idRolCliente automáticamente
       const res = await fetch("/registro", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nombre, correo, password, rolId })
+        body: JSON.stringify({ nombre, correo, password, rolId: idRolCliente })
       });
-      const data = await res.text();
-      alert(data);
+
       if (res.ok) {
-        window.location.href = "login.html";
+        const data = await res.json();
+        alert(data.mensaje);
+        localStorage.setItem("usuario", JSON.stringify({
+          nombre: data.nombre,
+          rol: data.rol,
+          correo: correo
+        }));
+        window.location.href = "/cliente";
+      } else {
+        const error = await res.json();
+        alert("❌ " + (error.error || "Error al registrarse"));
       }
     } catch (error) {
-      alert("❌ Error de conexión: " + error.message);
+      alert("❌ Error de conexión con el servidor");
     }
   }
 
-  cargarRoles();
+  // Ejecutamos la función al abrir la página
+  obtenerRolCliente();
 </script>
 </body>
 </html>
