@@ -6,90 +6,58 @@
   <title>Reporte de Productos - Pastelería</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <!-- Librerías para exportar -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-    body { background: linear-gradient(135deg, #ffe6d9, #ffd6cc); padding: 20px; min-height: 100vh; }
-    .container { max-width: 1200px; margin: auto; background: white; border-radius: 25px; padding: 30px; box-shadow: 0 15px 40px rgba(0,0,0,0.1); }
+    body { background: linear-gradient(135deg, #ffe6d9, #ffd6cc); padding: 20px; min-height: 100vh; display: flex; justify-content: center; }
+    
+    .container { max-width: 1200px; width: 100%; background: #fff; border-radius: 30px; padding: clamp(20px, 4vw, 40px); box-shadow: 0 20px 50px rgba(0,0,0,0.1); height: fit-content; }
     
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px; }
-    h1 { color: #7a3e2d; display: flex; align-items: center; gap: 10px; font-size: 1.8rem; }
-    .btn-volver { background: #f7b267; color: white; border: none; padding: 10px 20px; border-radius: 40px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+    h1 { color: #7a3e2d; display: flex; align-items: center; gap: 10px; font-size: clamp(1.5rem, 4vw, 2rem); }
+    .btn-volver { background: #f7b267; color: white; border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; font-size: clamp(0.9rem, 2vw, 1rem); }
     
     .botones-exportar { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
-    .btn { padding: 10px 20px; border: none; border-radius: 40px; cursor: pointer; font-weight: bold; color: white; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s; }
+    .btn { padding: 12px 20px; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; color: white; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; font-size: clamp(0.9rem, 2vw, 1rem); flex: 1; min-width: 150px;}
     .btn-excel { background: #1e7e34; }
     .btn-pdf { background: #dc3545; }
     .btn-word { background: #0078d7; }
-    .btn:hover { transform: scale(1.02); opacity: 0.9; }
 
+    /* Tabla para PC */
     .tabla-container { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; background: #fff9f7; border-radius: 15px; overflow: hidden; min-width: 700px; }
-    th { background: #ff6f61; color: white; padding: 15px; text-align: center; font-weight: 600; }
-    td { padding: 12px; border-bottom: 1px solid #ffe0d4; text-align: center; vertical-align: middle; font-size: 0.9rem; }
+    table { width: 100%; border-collapse: collapse; background: #fff9f7; border-radius: 15px; overflow: hidden; min-width: 600px; }
+    th { background: #ff6f61; color: white; padding: clamp(10px, 2vw, 15px); text-align: center; font-weight: 600; font-size: clamp(0.9rem, 2vw, 1rem); }
+    td { padding: clamp(10px, 2vw, 15px); border-bottom: 1px solid #ffe0d4; text-align: center; vertical-align: middle; font-size: clamp(0.8rem, 1.5vw, 0.95rem); }
     tr:hover { background: #fff0e8; }
     .producto-img { width: 50px; height: 50px; object-fit: cover; border-radius: 10px; }
-    
-   /* DISEÑO PARA CELULARES */
-@media (max-width: 768px) {
-  .container { padding: 15px; }
-  h1 { font-size: 1.5rem; }
-  .botones-exportar { flex-direction: column; }
-  .btn { width: 100%; justify-content: center; }
-  
-  /* Convertir tabla en tarjetas */
-  table { min-width: 100%; display: block; }
-  thead { display: none; }
-  tbody { display: block; }
-  
-  tr { 
-    display: block; 
-    margin-bottom: 15px; 
-    background: #fff9f7; 
-    border-radius: 15px; 
-    padding: 15px;
-    border: 1px solid #ffe0d4;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-  }
-  
-  td { 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center;
-    padding: 8px 0; 
-    border-bottom: 1px solid #ffe0d4; 
-    font-size: 1rem;
-    text-align: right;
-  }
-  td:last-child { border-bottom: none; }
-  
-  /* Etiquetas para cada dato en el celular */
-  td::before { 
-    content: attr(data-label); 
-    font-weight: bold; 
-    color: #7a3e2d; 
-    text-align: left;
-  }
-  
-  .producto-img { width: 60px; height: 60px; margin-left: auto; }
-}
+
+    /* Adaptación a Tarjetas en Celular */
+    @media (max-width: 768px) {
+      table { min-width: 100%; display: block; }
+      thead { display: none; }
+      tbody { display: block; }
+      tr { display: block; margin-bottom: 15px; background: #fff9f7; border-radius: 15px; padding: 15px; border: 1px solid #ffe0d4; }
+      td { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #ffe0d4; text-align: right; font-size: 0.95rem; }
+      td:last-child { border-bottom: none; }
+      td::before { content: attr(data-label); font-weight: bold; color: #7a3e2d; text-align: left; }
+      .producto-img { width: 60px; height: 60px; }
+    }
   </style>
 </head>
 <body>
 <div class="container">
   <div class="header">
     <h1><i class="fas fa-chart-line"></i> Reporte de Productos</h1>
-    <a href="/admin" class="btn-volver"><i class="fas fa-arrow-left"></i> Volver al Admin</a>
+    <a href="/admin" class="btn-volver"><i class="fas fa-arrow-left"></i> Volver</a>
   </div>
 
   <div class="botones-exportar">
-    <button class="btn btn-excel" onclick="exportarExcel()"><i class="fas fa-file-excel"></i> Descargar Excel</button>
-    <button class="btn btn-pdf" onclick="exportarPDF()"><i class="fas fa-file-pdf"></i> Descargar PDF</button>
-    <button class="btn btn-word" onclick="exportarWord()"><i class="fas fa-file-word"></i> Descargar Word</button>
+    <button class="btn btn-excel" onclick="exportarExcel()"><i class="fas fa-file-excel"></i> Excel</button>
+    <button class="btn btn-pdf" onclick="exportarPDF()"><i class="fas fa-file-pdf"></i> PDF</button>
+    <button class="btn btn-word" onclick="exportarWord()"><i class="fas fa-file-word"></i> Word</button>
   </div>
 
   <div class="tabla-container">
@@ -99,12 +67,12 @@
           <th>Imagen</th>
           <th>Nombre</th>
           <th>Descripción</th>
-          <th>Precio (MXN)</th>
+          <th>Precio</th>
           <th>Cantidad</th>
         </tr>
       </thead>
       <tbody id="tbodyProductos">
-        <tr><td colspan="5" style="padding: 30px;">Cargando productos...</td></tr>
+        <tr><td colspan="5" style="padding: 30px; text-align: center;">Cargando productos...</td></tr>
       </tbody>
     </table>
   </div>
@@ -112,89 +80,44 @@
 
 <script>
   let productos = [];
-
   async function cargarProductos() {
     try {
       const res = await fetch('/productos');
       productos = await res.json();
       const tbody = document.getElementById('tbodyProductos');
+      if (productos.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No hay productos.</td></tr>'; return; }
       
-      if (productos.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" style="padding: 30px;">No hay productos registrados.</td></tr>';
-        return;
-      }
-
       tbody.innerHTML = productos.map(p => `
-  <tr>
-    <td data-label="Imagen"><img class="producto-img" src="${p.imagenUrl || 'https://via.placeholder.com/50'}" onerror="this.src='https://via.placeholder.com/50'"></td>
-    <td data-label="Nombre"><strong>${p.nombre}</strong></td>
-    <td data-label="Descripción">${p.descripcion}</td>
-    <td data-label="Precio">$${p.precio.toFixed(2)}</td>
-    <td data-label="Cantidad">${p.cantidad}</td>
-  </tr>
-`).join('');
-    } catch (error) {
-      document.getElementById('tbodyProductos').innerHTML = '<tr><td colspan="5" style="padding: 30px; color: red;">Error al cargar productos</td></tr>';
-    }
+        <tr>
+          <td data-label="Imagen"><img class="producto-img" src="${p.imagenUrl || 'https://via.placeholder.com/50'}" onerror="this.src='https://via.placeholder.com/50'"></td>
+          <td data-label="Nombre"><strong>${p.nombre}</strong></td>
+          <td data-label="Descripción">${p.descripcion}</td>
+          <td data-label="Precio">$${p.precio.toFixed(2)}</td>
+          <td data-label="Cantidad">${p.cantidad}</td>
+        </tr>
+      `).join('');
+    } catch (error) { document.getElementById('tbodyProductos').innerHTML = '<tr><td colspan="5" style="text-align:center;">Error al cargar.</td></tr>'; }
   }
 
   function exportarExcel() {
-    const datos = productos.map(p => ({
-      'Nombre': p.nombre,
-      'Descripción': p.descripcion,
-      'Precio': p.precio,
-      'Cantidad': p.cantidad
-    }));
-    const ws = XLSX.utils.json_to_sheet(datos);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Productos');
-    XLSX.writeFile(wb, `Reporte_Productos_${new Date().toLocaleDateString()}.xlsx`);
+    const datos = productos.map(p => ({ 'Nombre': p.nombre, 'Descripción': p.descripcion, 'Precio': p.precio, 'Cantidad': p.cantidad }));
+    const ws = XLSX.utils.json_to_sheet(datos); const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Productos'); XLSX.writeFile(wb, `Reporte_${new Date().toLocaleDateString()}.xlsx`);
   }
 
   function exportarPDF() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF({ orientation: 'landscape' });
+    const { jsPDF } = window.jspdf; const doc = new jsPDF({ orientation: 'landscape' });
     doc.text('Reporte de Productos - Pastelería Delicia', 14, 15);
     const columnas = ['Nombre', 'Descripción', 'Precio', 'Cantidad'];
-    const filas = productos.map(p => [
-      p.nombre,
-      p.descripcion.length > 50 ? p.descripcion.substring(0, 50) + '...' : p.descripcion,
-      '$' + p.precio.toFixed(2),
-      p.cantidad
-    ]);
-    doc.autoTable({
-      head: [columnas],
-      body: filas,
-      startY: 25,
-      headStyles: { fillColor: [255, 111, 97] }
-    });
-    doc.save(`Reporte_Productos_${new Date().toLocaleDateString()}.pdf`);
+    const filas = productos.map(p => [p.nombre, p.descripcion.length > 50 ? p.descripcion.substring(0, 50) + '...' : p.descripcion, '$' + p.precio.toFixed(2), p.cantidad]);
+    doc.autoTable({ head: [columnas], body: filas, startY: 25, headStyles: { fillColor: [255, 111, 97] } });
+    doc.save(`Reporte_${new Date().toLocaleDateString()}.pdf`);
   }
 
   function exportarWord() {
-    let html = `
-      <html>
-      <head><meta charset="UTF-8"><title>Reporte de Productos</title></head>
-      <body>
-        <h1 style="color: #7a3e2d;">Reporte de Productos - Pastelería Delicia</h1>
-        <p>Fecha: ${new Date().toLocaleString()}</p>
-        <table border="1" style="border-collapse: collapse; width: 100%; text-align: center;">
-          <tr style="background-color: #ff6f61; color: white;">
-            <th>Nombre</th><th>Descripción</th><th>Precio</th><th>Cantidad</th>
-          </tr>
-          ${productos.map(p => `
-            <tr>
-              <td>${p.nombre}</td><td>${p.descripcion}</td><td>$${p.precio.toFixed(2)}</td><td>${p.cantidad}</td>
-            </tr>
-          `).join('')}
-        </table>
-      </body>
-      </html>
-    `;
-    const blob = new Blob([html], { type: 'application/msword' });
-    saveAs(blob, `Reporte_Productos_${new Date().toLocaleDateString()}.doc`);
+    let html = `<html><head><meta charset="UTF-8"></head><body><h1 style="color: #7a3e2d;">Reporte de Productos</h1><table border="1" style="border-collapse: collapse; width: 100%; text-align: center;"><tr style="background-color: #ff6f61; color: white;"><th>Nombre</th><th>Descripción</th><th>Precio</th><th>Cantidad</th></tr>${productos.map(p => `<tr><td>${p.nombre}</td><td>${p.descripcion}</td><td>$${p.precio.toFixed(2)}</td><td>${p.cantidad}</td></tr>`).join('')}</table></body></html>`;
+    const blob = new Blob([html], { type: 'application/msword' }); saveAs(blob, `Reporte_${new Date().toLocaleDateString()}.doc`);
   }
-
   cargarProductos();
 </script>
 </body>

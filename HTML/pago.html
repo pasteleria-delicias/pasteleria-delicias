@@ -2,31 +2,28 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Proceso de Pago - Pastelería</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-    body { background: linear-gradient(135deg, #ffe6d9, #ffd6cc); padding: 40px 20px; }
-    .container { max-width: 800px; margin: auto; background: white; border-radius: 25px; padding: 30px; box-shadow: 0 15px 40px rgba(0,0,0,0.1); }
-    h1 { color: #7a3e2d; text-align: center; margin-bottom: 10px; }
-    .subtitulo { text-align: center; color: #777; margin-bottom: 30px; }
-    .resumen { background: #fff9f7; border-radius: 20px; padding: 20px; margin-bottom: 30px; }
-    .resumen-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #ffe0d4; }
-    .total { font-size: 1.2rem; font-weight: bold; color: #ff6f61; margin-top: 15px; padding-top: 10px; border-top: 2px solid #ffe0d4; }
-    .form-pago input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid #ddd; }
-    .btn-pagar { background: #ff6f61; color: white; border: none; padding: 15px; border-radius: 40px; width: 100%; margin-top: 20px; cursor: pointer; font-weight: bold; font-size: 1.1rem; }
-    .btn-volver { background: #f7b267; color: white; border: none; padding: 12px; border-radius: 40px; width: 100%; margin-top: 10px; cursor: pointer; }
-    .mensaje { text-align: center; padding: 20px; background: #d4edda; color: #155724; border-radius: 10px; margin-top: 20px; display: none; }
-  /* DISEÑO PARA CELULARES */
-@media (max-width: 768px) {
-  .container { padding: 15px; margin: 10px; width: 95%; }
-  h1 { font-size: 1.5rem; }
-  .resumen { padding: 15px; }
-  .resumen-item { flex-direction: column; gap: 5px; text-align: center; }
-  .form-pago input { font-size: 0.9rem; padding: 12px; }
-  .btn-pagar, .btn-volver { font-size: 1rem; }
-}
+    body { background: linear-gradient(135deg, #ffe6d9, #ffd6cc); padding: 20px; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    
+    .container { max-width: 800px; width: 100%; background: #fff; border-radius: 30px; padding: clamp(20px, 4vw, 40px); box-shadow: 0 20px 50px rgba(0,0,0,0.1); }
+    h1 { color: #7a3e2d; text-align: center; margin-bottom: 10px; font-size: clamp(1.5rem, 4vw, 2rem); }
+    .subtitulo { text-align: center; color: #777; margin-bottom: 25px; font-size: clamp(0.9rem, 2vw, 1rem); }
+    
+    .resumen { background: #fff9f7; border-radius: 20px; padding: 20px; margin-bottom: 25px; border: 1px solid #ffe0d4; }
+    .resumen-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #ffe0d4; font-size: clamp(0.9rem, 2vw, 1rem); }
+    .total { font-size: clamp(1.1rem, 3vw, 1.3rem); font-weight: bold; color: #ff6f61; margin-top: 15px; padding-top: 10px; border-top: 2px solid #ffe0d4; text-align: right; }
+    
+    .form-pago input { width: 100%; padding: clamp(12px, 2vw, 15px); margin: 8px 0; border-radius: 15px; border: 1px solid #eee; background: #fafafa; outline: none; font-size: clamp(0.95rem, 2vw, 1rem); }
+    
+    .btn-pagar { background: #ff6f61; color: white; border: none; padding: clamp(15px, 3vw, 18px); border-radius: 50px; width: 100%; margin-top: 20px; cursor: pointer; font-weight: bold; font-size: clamp(1rem, 2vw, 1.1rem); box-shadow: 0 8px 20px rgba(255,111,97,0.3); }
+    .btn-volver { background: #f7b267; color: white; border: none; padding: 12px; border-radius: 50px; width: 100%; margin-top: 10px; cursor: pointer; font-weight: bold; font-size: clamp(0.9rem, 2vw, 1rem); text-decoration: none; display: inline-block; text-align: center;}
+    
+    .mensaje { text-align: center; padding: 20px; background: #d4edda; color: #155724; border-radius: 15px; margin-top: 20px; display: none; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -37,13 +34,13 @@
   <div class="resumen" id="resumen"></div>
 
   <div class="form-pago">
-    <input type="text" id="nombreCompleto" placeholder="Nombre completo" required>
-    <input type="tel" id="telefono" placeholder="Teléfono" required>
-    <input type="text" id="direccion" placeholder="Dirección de envío" required>
+    <input type="text" id="nombreCompleto" placeholder="Nombre completo">
+    <input type="tel" id="telefono" placeholder="Teléfono">
+    <input type="text" id="direccion" placeholder="Dirección de envío">
   </div>
 
   <button class="btn-pagar" onclick="procesarPago()"><i class="fas fa-check-circle"></i> Confirmar Pago</button>
-  <button class="btn-volver" onclick="volver()"><i class="fas fa-arrow-left"></i> Volver al Carrito</button>
+  <a href="/cliente" class="btn-volver"><i class="fas fa-arrow-left"></i> Volver al Carrito</a>
 
   <div id="mensaje" class="mensaje"></div>
 </div>
@@ -52,74 +49,45 @@
   const usuario = JSON.parse(localStorage.getItem('usuario'));
   let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
 
-  if (!usuario) {
-    window.location.href = 'login.html';
-  }
+  if (!usuario) { window.location.href = 'login.html'; }
 
   if (carrito.length === 0) {
-    document.getElementById('resumen').innerHTML = '<p>No hay productos en el carrito</p>';
+    document.getElementById('resumen').innerHTML = '<p style="text-align:center;">No hay productos en el carrito</p>';
   } else {
     let total = 0;
-    let html = '<h3>Resumen de compra</h3>';
+    let html = '<h3 style="color:#7a3e2d; margin-bottom:10px;">Resumen</h3>';
     carrito.forEach(item => {
       total += item.precio * item.cantidad;
-      html += `<div class="resumen-item">
-        <span>${item.nombre} x ${item.cantidad}</span>
-        <span>$${(item.precio * item.cantidad).toFixed(2)}</span>
-      </div>`;
+      html += `<div class="resumen-item"><span>${item.nombre} x ${item.cantidad}</span><span>$${(item.precio * item.cantidad).toFixed(2)}</span></div>`;
     });
-    html += `<div class="total">Total a pagar: $${total.toFixed(2)}</div>`;
+    html += `<div class="total">Total: $${total.toFixed(2)}</div>`;
     document.getElementById('resumen').innerHTML = html;
   }
 
   async function procesarPago() {
-    const nombre = document.getElementById('nombreCompleto').value;
-    const telefono = document.getElementById('telefono').value;
-    const direccion = document.getElementById('direccion').value;
+    const nombre = document.getElementById('nombreCompleto').value.trim();
+    const telefono = document.getElementById('telefono').value.trim();
+    const direccion = document.getElementById('direccion').value.trim();
 
-    if (!nombre || !telefono || !direccion) {
-      alert('Completa todos los campos');
-      return;
-    }
+    if (!nombre || !telefono || !direccion) { alert('Completa todos los campos'); return; }
 
     const total = carrito.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
-    const productosParaBD = carrito.map(item => ({
-      id: item.id,
-      nombre: item.nombre,
-      precio: item.precio,
-      cantidad: item.cantidad
-    }));
+    const productosParaBD = carrito.map(item => ({ id: item._id, nombre: item.nombre, precio: item.precio, cantidad: item.cantidad }));
 
     try {
       const res = await fetch('/ventas', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          usuario: usuario.nombre,
-          correo: usuario.correo,
-          productos: productosParaBD,
-          total: total
-        })
+        body: JSON.stringify({ usuario: usuario.nombre, correo: usuario.correo, productos: productosParaBD, total: total })
       });
 
       if (res.ok) {
         localStorage.removeItem('carrito');
-        const mensajeDiv = document.getElementById('mensaje');
-        mensajeDiv.innerHTML = '<i class="fas fa-check-circle"></i> ¡Pago exitoso! Tu pedido ha sido registrado. Gracias por tu compra.';
-        mensajeDiv.style.display = 'block';
-        setTimeout(() => {
-          window.location.href = 'cliente.html';
-        }, 3000);
-      } else {
-        alert('Error al procesar el pago');
-      }
-    } catch (error) {
-      alert('Error de conexión');
-    }
-  }
-
-  function volver() {
-    window.location.href = 'cliente.html';
+        document.getElementById('mensaje').innerHTML = '✅ ¡Pago exitoso! Tu pedido ha sido registrado.';
+        document.getElementById('mensaje').style.display = 'block';
+        setTimeout(() => { window.location.href = 'cliente.html'; }, 3000);
+      } else { alert('Error al procesar el pago'); }
+    } catch (error) { alert('Error de conexión'); }
   }
 </script>
 </body>

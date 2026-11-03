@@ -3,37 +3,118 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mi Carrito - Pastelería</title>
+  <title>Productos y Carrito - Pastelería</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-    body { background: linear-gradient(135deg, #ffe6d9, #ffd6cc); min-height: 100vh; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+    body { background: linear-gradient(135deg, #ffe6d9, #ffd6cc); min-height: 100vh; padding: 20px; display: flex; flex-direction: column; align-items: center; scroll-behavior: smooth; }
     
-    .app-container { width: 100%; max-width: 1100px; }
+    .app-container { width: 100%; max-width: 1200px; background: #fff; border-radius: 30px; padding: clamp(20px, 4vw, 40px); box-shadow: 0 20px 50px rgba(0,0,0,0.1); }
     
     .header-text { text-align: center; margin-bottom: 20px; }
-    .header-text h1 { color: #7a3e2d; font-size: 1.8rem; }
+    .header-text h1 { color: #7a3e2d; font-size: clamp(1.8rem, 4vw, 2.5rem); }
     
-    .nav-bar { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; align-items: center; }
-    .nav-bar a { text-decoration: none; padding: 10px 20px; border-radius: 50px; background: #fff; color: #7a3e2d; font-weight: 500; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: 0.3s; }
+    /* BARRA DE NAVEGACIÓN */
+    .nav-bar { display: flex; justify-content: center; gap: 15px; margin-bottom: 25px; flex-wrap: wrap; align-items: center; }
+    .nav-bar a { text-decoration: none; padding: 10px 20px; border-radius: 50px; background: #fff0e8; color: #7a3e2d; font-weight: 500; transition: 0.3s; font-size: clamp(0.9rem, 2vw, 1rem); }
     .nav-bar a:hover, .nav-bar a.active { background: #ff6f61; color: white; }
-    .btn-salir { background: #e74c3c; color: white; border: none; padding: 10px 20px; border-radius: 50px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(231,76,60,0.3); }
+    .btn-salir { background: #e74c3c; color: white; border: none; padding: 10px 20px; border-radius: 50px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: clamp(0.9rem, 2vw, 1rem); }
+    .btn-salir:hover { background: #c0392b; }
 
-    .main-content { display: flex; gap: 20px; }
-    .productos-section { flex: 2; }
-    .carrito-section { flex: 1; background: #fff; padding: 20px; border-radius: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); height: fit-content; }
+    /* DISEÑO DE DOS COLUMNAS */
+    .main-content { display: flex; gap: 25px; flex-wrap: wrap; }
+    .productos-section { flex: 2; min-width: 300px; }
     
-    .productos-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-    .producto-card { background: #fff; border-radius: 25px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.08); display: flex; flex-direction: column; }
-    .producto-img { width: 100%; height: 150px; object-fit: cover; }
-    .producto-info { padding: 15px; display: flex; flex-direction: column; flex: 1; }
-    .producto-nombre { font-size: 1.1rem; font-weight: bold; color: #7a3e2d; }
-    .producto-precio { color: #ff6f61; font-weight: bold; font-size: 1.2rem; margin: 5px 0; }
-    .btn-agregar { background: #f7b267; color: white; border: none; padding: 10px; border-radius: 50px; cursor: pointer; font-weight: bold; margin-top: 10px; transition: 0.2s; }
-    .btn-agregar:hover { background: #e09d46; }
+    .carrito-section { 
+      flex: 1; 
+      min-width: 300px; 
+      background: #fff9f7; 
+      padding: 20px; 
+      border-radius: 25px; 
+      border: 1px solid #ffe0d4; 
+      height: fit-content; 
+      position: sticky; 
+      top: 20px;
+    }
+    
+    /* DISEÑO DE LAS TARJETAS DE PRODUCTOS (MEJORADO) */
+    .productos-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+    
+    .producto-card { 
+      background: #fff; 
+      border-radius: 20px; 
+      overflow: hidden; 
+      box-shadow: 0 8px 20px rgba(0,0,0,0.06); 
+      display: flex; 
+      flex-direction: column; 
+      border: 1px solid #f5e8e0;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .producto-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px rgba(122,62,45,0.15);
+    }
 
-    /* Carrito */
+    .producto-img { width: 100%; height: 180px; object-fit: cover; }
+    
+    .producto-info { padding: 18px; display: flex; flex-direction: column; flex: 1; }
+    
+    .producto-nombre { 
+      font-size: 1.2rem; 
+      font-weight: 700; 
+      color: #7a3e2d; 
+      margin-bottom: 6px;
+      line-height: 1.2;
+    }
+    
+    /* AQUÍ AGREGAMOS EL ESTILO PARA LA DESCRIPCIÓN */
+    .producto-descripcion { 
+      font-size: 0.85rem; 
+      color: #777; 
+      margin-bottom: 15px; 
+      flex: 1;
+      display: -webkit-box;
+      -webkit-line-clamp: 2; /* Corta el texto a 2 líneas si es muy largo */
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    
+    /* PRECIO Y STOCK ALINEADOS */
+    .precio-stock-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      background: #fff5f0;
+      padding: 8px 12px;
+      border-radius: 12px;
+    }
+    
+    .producto-precio { color: #ff6f61; font-weight: 800; font-size: 1.3rem; }
+    .producto-stock { font-size: 0.8rem; color: #7a3e2d; font-weight: 600; }
+    .producto-stock i { color: #f7b267; }
+
+    .btn-agregar { 
+      background: #ff6f61; 
+      color: white; 
+      border: none; 
+      padding: 12px; 
+      border-radius: 50px; 
+      cursor: pointer; 
+      font-weight: bold; 
+      width: 100%;
+      transition: 0.2s; 
+      font-size: 0.95rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 10px rgba(255,111,97,0.2);
+    }
+    .btn-agregar:hover { background: #e05a4f; transform: scale(1.02); }
+
+    /* CARRITO */
     .carrito-item { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
     .carrito-item img { width: 50px; height: 50px; border-radius: 10px; object-fit: cover; }
     .carrito-info { flex: 1; }
@@ -41,21 +122,30 @@
     .carrito-precio { font-size: 0.85rem; color: #ff6f61; }
     .carrito-controles { display: flex; align-items: center; gap: 10px; }
     .carrito-controles button { width: 25px; height: 25px; border-radius: 50%; border: none; background: #eee; cursor: pointer; font-weight: bold; }
-    .btn-pagar { width: 100%; padding: 15px; background: #ff6f61; color: white; border: none; border-radius: 50px; font-weight: bold; margin-top: 20px; cursor: pointer; box-shadow: 0 5px 15px rgba(255,111,97,0.3); }
+    .btn-pagar { width: 100%; padding: 15px; background: #ff6f61; color: white; border: none; border-radius: 50px; font-weight: bold; margin-top: 20px; cursor: pointer; font-size: 1rem; box-shadow: 0 4px 10px rgba(255,111,97,0.3);}
 
-    @media (max-width: 850px) { .main-content { flex-direction: column; } .productos-grid { grid-template-columns: 1fr; } }
+    /* BOTÓN FLOTANTE */
+    .btn-flotante-carrito {
+      position: fixed; bottom: 20px; right: 20px; background: #ff6f61; color: white;
+      border: none; border-radius: 50px; padding: 15px 25px; font-weight: bold;
+      font-size: 1rem; box-shadow: 0 10px 25px rgba(255,111,97,0.4); cursor: pointer;
+      display: none; align-items: center; gap: 10px; z-index: 1000;
+    }
+
+    @media (max-width: 850px) { 
+      .main-content { flex-direction: column; } 
+      .carrito-section { position: static; margin-top: 20px; scroll-margin-top: 20px; }
+      .btn-flotante-carrito { display: flex; }
+    }
   </style>
 </head>
 <body>
 <div class="app-container">
-  <div class="header-text">
-    <h1>Nuestros Productos</h1>
-  </div>
+  <div class="header-text"><h1>Nuestros Productos</h1></div>
   
   <div class="nav-bar">
     <a href="/"><i class="fas fa-home"></i> Inicio</a>
-    <a href="/menu-publico"><i class="fas fa-utensils"></i> Menú</a>
-    <a href="/cliente" class="active"><i class="fas fa-shopping-bag"></i> Cliente</a>
+    <a href="/cliente" class="active"><i class="fas fa-shopping-cart"></i> Productos y Carrito</a>
     <button class="btn-salir" onclick="cerrarSesion()"><i class="fas fa-sign-out-alt"></i> Salir</button>
   </div>
 
@@ -64,62 +154,70 @@
       <div id="productosContainer" class="productos-grid"></div>
     </div>
     
-    <div class="carrito-section">
-      <h2 style="color: #7a3e2d; margin-bottom: 15px; text-align: center;"><i class="fas fa-shopping-cart"></i> Mi Carrito</h2>
+    <div class="carrito-section" id="seccionCarrito">
+      <h2 style="color: #7a3e2d; margin-bottom: 15px; text-align: center; font-size: 1.3rem;"><i class="fas fa-shopping-cart"></i> Mi Carrito</h2>
       <div id="carritoContainer"></div>
-      <button class="btn-pagar" onclick="procederPago()">Pagar</button>
+      <button class="btn-pagar" onclick="procederPago()"><i class="fas fa-credit-card"></i> Pagar</button>
     </div>
   </div>
 </div>
+
+<button class="btn-flotante-carrito" onclick="irAlCarrito()">
+  <i class="fas fa-shopping-basket"></i> Ver mi Carrito
+</button>
 
 <script>
   let productos = [];
   let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
 
-  // 1. Cargar productos desde el backend
+  // 1. Cargar productos con la información detallada
   fetch('/productos').then(res => res.json()).then(data => {
     productos = data;
     document.getElementById('productosContainer').innerHTML = productos.map(p => `
       <div class="producto-card">
-        <img class="producto-img" src="${p.imagenUrl || 'https://via.placeholder.com/300x150'}" onerror="this.src='https://via.placeholder.com/300x150'">
+        <img class="producto-img" src="${p.imagenUrl || 'https://via.placeholder.com/300x180'}" onerror="this.src='https://via.placeholder.com/300x180'">
         <div class="producto-info">
           <div class="producto-nombre">${p.nombre}</div>
-          <div class="producto-precio">$${p.precio.toFixed(2)}</div>
-          <div style="font-size: 0.8rem; color: #777; margin-bottom: 8px;">Stock: ${p.cantidad}</div>
-          <button class="btn-agregar" onclick="agregar('${p._id}')">Agregar al carrito</button>
+          
+          <!-- AQUÍ SE MUESTRA LA DESCRIPCIÓN -->
+          <div class="producto-descripcion">${p.descripcion}</div>
+          
+          <div class="precio-stock-container">
+            <div class="producto-precio">$${p.precio.toFixed(2)}</div>
+            <div class="producto-stock"><i class="fas fa-box"></i> ${p.cantidad} disp.</div>
+          </div>
+          
+          <button class="btn-agregar" onclick="agregar('${p._id}')">
+            <i class="fas fa-cart-plus"></i> Agregar
+          </button>
         </div>
       </div>
     `).join('');
   });
 
-  // 2. Función para agregar con validación de stock
+  // 2. Agregar producto con validación de stock
   function agregar(id) {
     const p = productos.find(x => x._id === id);
     const ext = carrito.find(x => x._id === id);
-    
     let cantidadEnCarrito = ext ? ext.cantidad : 0;
 
-    // Validación: si ya tengo el máximo en el carrito, no dejo agregar más
     if (cantidadEnCarrito >= p.cantidad) {
       alert(`❌ No puedes agregar más. Solo hay ${p.cantidad} unidades disponibles de ${p.nombre}.`);
       return; 
     }
 
-    if (ext) {
-      ext.cantidad++; 
-    } else {
-      carrito.push({ ...p, cantidad: 1 });
-    }
+    if (ext) { ext.cantidad++; } 
+    else { carrito.push({ ...p, cantidad: 1 }); }
     
     localStorage.setItem('carrito', JSON.stringify(carrito));
     actualizarCarrito();
   }
 
-  // 3. Actualizar la vista del carrito
+  // 3. Actualizar vista del carrito
   function actualizarCarrito() {
     const cont = document.getElementById('carritoContainer');
     if (carrito.length === 0) { 
-      cont.innerHTML = '<p style="text-align:center; color:#777;">Vacío</p>'; 
+      cont.innerHTML = '<p style="text-align:center; color:#777; font-size:0.9rem;">Tu carrito está vacío</p>'; 
       return; 
     }
     
@@ -139,34 +237,31 @@
     `).join('');
   }
 
-  // 4. Cambiar cantidad desde el carrito (con validación de límite)
+  // 4. Cambiar cantidad en el carrito
   function cambiarCantidad(idx, delta) {
     const item = carrito[idx];
     const productoOriginal = productos.find(p => p._id === item._id);
 
-    if (delta > 0) {
-      // Si intenta sumar, revisamos el stock real
-      if (item.cantidad >= productoOriginal.cantidad) {
-        alert(`❌ Límite alcanzado. Solo hay ${productoOriginal.cantidad} unidades disponibles.`);
-        return;
-      }
+    if (delta > 0 && item.cantidad >= productoOriginal.cantidad) {
+      alert(`❌ Límite alcanzado. Solo hay ${productoOriginal.cantidad} unidades de ${item.nombre}.`);
+      return;
     }
 
     const nuevaCantidad = item.cantidad + delta;
-    
-    if (nuevaCantidad < 1) {
-      // Si llega a cero, lo eliminamos
-      carrito.splice(idx, 1);
-    } else {
-      carrito[idx].cantidad = nuevaCantidad;
-    }
+    if (nuevaCantidad < 1) { carrito.splice(idx, 1); } 
+    else { carrito[idx].cantidad = nuevaCantidad; }
     
     localStorage.setItem('carrito', JSON.stringify(carrito));
     actualizarCarrito();
   }
 
+  // 5. Scroll hacia el carrito
+  function irAlCarrito() {
+    document.getElementById('seccionCarrito').scrollIntoView({ behavior: 'smooth' });
+  }
+
   function procederPago() { 
-    if (carrito.length === 0) alert('Carrito vacío'); 
+    if (carrito.length === 0) alert('Tu carrito está vacío'); 
     else window.location.href = 'pago.html'; 
   }
   
