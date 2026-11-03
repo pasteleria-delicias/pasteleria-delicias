@@ -21,7 +21,6 @@
 <div class="container">
   <h2>Crear Administrador</h2>
   
-  <!-- AQUÍ ESTÁ EL TRUCO: autocomplete="off" para evitar sugerencias -->
   <input id="nombre" type="text" placeholder="Nombre completo" autocomplete="off">
   <input id="correo" type="email" placeholder="Correo electrónico" autocomplete="off">
   <input id="password" type="password" placeholder="Contraseña" autocomplete="new-password">
@@ -72,10 +71,27 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ nombre, correo, password, rolId })
       });
-      const data = await res.text();
-      alert(data);
+      
       if (res.ok) {
-        window.location.href = "/login.html";
+        const data = await res.json(); // Recibimos el nombre y el rol desde el backend
+        alert("✅ " + data.mensaje + ". Entrando al panel...");
+        
+        // Guardamos los datos en el localStorage (como si ya hubieras iniciado sesión)
+        localStorage.setItem("usuario", JSON.stringify({
+          nombre: data.nombre,
+          rol: data.rol,
+          correo: correo
+        }));
+
+        // Redirigimos automáticamente según el rol
+        if (data.rol === "Administrador") {
+          window.location.href = "/admin";
+        } else {
+          window.location.href = "/cliente";
+        }
+      } else {
+        const error = await res.text();
+        alert("❌ " + error);
       }
     } catch (error) { 
       alert("❌ Error de conexión"); 
