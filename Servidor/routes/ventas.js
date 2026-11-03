@@ -23,3 +23,12 @@ router.get('/ventas/:correo', async (req, res) => {
 });
 
 module.exports = router;
+// Ruta para obtener TODAS las ventas
+router.get('/ventas', async (req, res) => {
+  try {
+    const ventas = await Venta.find().sort({ fecha: -1 });
+    res.json(ventas);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});

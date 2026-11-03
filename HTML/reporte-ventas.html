@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard de Ventas - Pastelería</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+    body { background: linear-gradient(135deg, #ffe6d9, #ffd6cc); padding: 20px; min-height: 100vh; display: flex; justify-content: center; }
+    
+    .container { max-width: 1100px; width: 100%; background: #fff; border-radius: 30px; padding: clamp(20px, 4vw, 40px); box-shadow: 0 20px 50px rgba(0,0,0,0.1); height: fit-content; }
+    
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px; }
+    h1 { color: #7a3e2d; display: flex; align-items: center; gap: 10px; font-size: clamp(1.5rem, 4vw, 2rem); }
+    .btn-volver { background: #f7b267; color: white; border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; font-size: clamp(0.9rem, 2vw, 1rem); }
+    
+    .filtros { display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; justify-content: center; }
+    .filtro-btn { background: #fff0e8; color: #7a3e2d; border: none; padding: 10px 20px; border-radius: 50px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 0.9rem; }
+    .filtro-btn.active, .filtro-btn:hover { background: #ff6f61; color: white; }
+
+    .resumen-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px; }
+    .tarjeta-resumen { background: #fff9f7; border-radius: 20px; padding: 20px; text-align: center; border: 1px solid #ffe0d4; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+    .tarjeta-resumen i { font-size: 1.8rem; color: #ff6f61; margin-bottom: 10px; }
+    .tarjeta-resumen h3 { color: #777; font-size: 0.85rem; font-weight: 500; margin-bottom: 5px; }
+    .tarjeta-resumen p { color: #7a3e2d; font-size: 1.6rem; font-weight: 700; }
+    
+    .grafica-container { background: #fff; border-radius: 20px; padding: 20px; border: 1px solid #ffe0d4; margin-bottom: 30px; display: flex; justify-content: center; }
+    .grafica-container canvas { max-height: 300px; width: 100%; }
+
+    .tabla-container { overflow-x: auto; margin-bottom: 20px; }
+    table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 15px; overflow: hidden; min-width: 600px; }
+    th { background: #7a3e2d; color: white; padding: 15px; text-align: left; font-weight: 600; font-size: 0.95rem; }
+    td { padding: 15px; border-bottom: 1px solid #ffe0d4; text-align: left; vertical-align: middle; font-size: 0.9rem; }
+    tr:hover { background: #fff9f7; }
+    .destacado { font-weight: bold; color: #ff6f61; font-size: 1.1rem; }
+
+    .botones-exportar { display: flex; gap: 15px; margin-top: 20px; flex-wrap: wrap; }
+    .btn { padding: 12px 20px; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; color: white; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; font-size: 0.9rem; flex: 1; min-width: 120px;}
+    .btn-excel { background: #1e7e34; }
+    .btn-pdf { background: #dc3545; }
+    .btn-word { background: #0078d7; }
+
+    @media (max-width: 600px) {
+      .resumen-grid { grid-template-columns: 1fr 1fr; }
+      .header { flex-direction: column; text-align: center; }
+      .btn { font-size: 0.8rem; padding: 10px; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1><i class="fas fa-chart-pie"></i> Resumen de Ventas</h1>
+    <a href="/admin" class="btn-volver"><i class="fas fa-arrow-left"></i> Volver al Panel</a>
+  </div>
+
+  <div class="filtros">
+    <button class="filtro-btn" onclick="cambiarFiltro('hoy', this)">Hoy</button>
+    <button class="filtro-btn" onclick="cambiarFiltro('semana', this)">Esta Semana</button>
+    <button class="filtro-btn" onclick="cambiarFiltro('mes', this)">Este Mes</button>
+    <button class="filtro-btn active" onclick="cambiarFiltro('todo', this)">Todo el tiempo</button>
+  </div>
+
+  <div class="resumen-grid">
+    <div class="tarjeta-resumen">
+      <i class="fas fa-dollar-sign"></i>
+      <h3>Ingresos</h3>
+      <p id="totalIngresos">$0.00</p>
+    </div>
+    <div class="tarjeta-resumen">
+      <i class="fas fa-shopping-bag"></i>
+      <h3>Pedidos</h3>
+      <p id="totalPedidos">0</p>
+    </div>
+    <div class="tarjeta-resumen">
+      <i class="fas fa-receipt"></i>
+      <h3>Ticket Promedio</h3>
+      <p id="ticketPromedio">$0.00</p>
+    </div>
+    <div class="tarjeta-resumen">
+      <i class="fas fa-crown" style="color: #f7b267;"></i>
+      <h3>Estrella</h3>
+      <p id="productoEstrella" style="font-size: 1rem; margin-top: 10px;">Ninguno</p>
+    </div>
+  </div>
+
+  <h3 style="color: #7a3e2d; margin-bottom: 10px; font-size: 1.1rem;"><i class="fas fa-chart-bar"></i> Top Productos</h3>
+  <div class="grafica-container">
+    <canvas id="graficaVentas"></canvas>
+  </div>
+
+  <h3 style="color: #7a3e2d; margin-bottom: 15px; font-size: 1.1rem;"><i class="fas fa-list-ol"></i> Detalle de Productos</h3>
+  <div class="tabla-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th>Cantidad Vendida</th>
+          <th>Total Recaudado</th>
+        </tr>
+      </thead>
+      <tbody id="tbodyProductos">
+        <tr><td colspan="3" style="text-align: center; padding: 20px;">Cargando datos...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="botones-exportar">
+    <button class="btn btn-excel" onclick="exportarExcel()"><i class="fas fa-file-excel"></i> Excel</button>
+    <button class="btn btn-pdf" onclick="exportarPDF()"><i class="fas fa-file-pdf"></i> PDF</button>
+    <button class="btn btn-word" onclick="exportarWord()"><i class="fas fa-file-word"></i> Word</button>
+  </div>
+</div>
+
+<script>
+  let todasLasVentas = [];
+  let ventasFiltradas = [];
+  let datosAgrupados = [];
+  let filtroActual = 'todo'; // Cambiado para que muestre todo al inicio
+  let miGrafica = null;
+
+  async function cargarVentas() {
+    try {
+      const res = await fetch('/ventas');
+      todasLasVentas = await res.json();
+      aplicarFiltro();
+    } catch (error) {
+      console.error("Error al cargar ventas:", error);
+    }
+  }
+
+  function cambiarFiltro(tipo, btn) {
+    filtroActual = tipo;
+    document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    aplicarFiltro();
+  }
+
+  function aplicarFiltro() {
+    const hoy = new Date();
+    const inicioSemana = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate() - hoy.getDay());
+    const inicioMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+
+    ventasFiltradas = todasLasVentas.filter(v => {
+      const fechaVenta = new Date(v.fecha);
+      if (filtroActual === 'hoy') return fechaVenta.toDateString() === hoy.toDateString();
+      if (filtroActual === 'semana') return fechaVenta >= inicioSemana;
+      if (filtroActual === 'mes') return fechaVenta >= inicioMes;
+      return true;
+    });
+
+    calcularResumen();
+  }
+
+  function calcularResumen() {
+    let totalDinero = 0;
+    let diccionarioProductos = {};
+
+    ventasFiltradas.forEach(venta => {
+      totalDinero += venta.total;
+      venta.productos.forEach(prod => {
+        if (!diccionarioProductos[prod.nombre]) diccionarioProductos[prod.nombre] = { cantidad: 0, total: 0 };
+        diccionarioProductos[prod.nombre].cantidad += prod.cantidad;
+        diccionarioProductos[prod.nombre].total += (prod.precio * prod.cantidad);
+      });
+    });
+
+    datosAgrupados = Object.keys(diccionarioProductos).map(nombre => ({
+      nombre: nombre,
+      cantidad: diccionarioProductos[nombre].cantidad,
+      total: diccionarioProductos[nombre].total
+    })).sort((a, b) => b.cantidad - a.cantidad);
+
+    document.getElementById('totalIngresos').innerText = `$${totalDinero.toFixed(2)}`;
+    document.getElementById('totalPedidos').innerText = ventasFiltradas.length;
+    
+    let ticketProm = ventasFiltradas.length > 0 ? (totalDinero / ventasFiltradas.length) : 0;
+    document.getElementById('ticketPromedio').innerText = `$${ticketProm.toFixed(2)}`;
+
+    document.getElementById('productoEstrella').innerText = datosAgrupados.length > 0 ? datosAgrupados[0].nombre : 'Ninguno';
+
+    const tbody = document.getElementById('tbodyProductos');
+    if (datosAgrupados.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; padding: 20px;">No hay ventas en este periodo.</td></tr>';
+    } else {
+      tbody.innerHTML = datosAgrupados.map(p => `
+        <tr>
+          <td><strong>${p.nombre}</strong></td>
+          <td>${p.cantidad} piezas</td>
+          <td class="destacado">$${p.total.toFixed(2)}</td>
+        </tr>
+      `).join('');
+    }
+
+    actualizarGrafica();
+  }
+
+  function actualizarGrafica() {
+    const ctx = document.getElementById('graficaVentas').getContext('2d');
+    const topProductos = datosAgrupados.slice(0, 5);
+    const nombres = topProductos.map(p => p.nombre);
+    const cantidades = topProductos.map(p => p.cantidad);
+
+    if (miGrafica) {
+      miGrafica.destroy(); 
+    }
+
+    miGrafica = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: nombres,
+        datasets: [{
+          label: 'Unidades Vendidas',
+          data: cantidades,
+          backgroundColor: ['#ff6f61', '#f7b267', '#7a3e2d', '#ff9e8c', '#fcd7a1'],
+          borderRadius: 10
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { beginAtZero: true, ticks: { stepSize: 1, font: { family: 'Poppins' } } },
+          x: { ticks: { font: { family: 'Poppins', size: 11 } } }
+        }
+      }
+    });
+  }
+
+  function exportarExcel() {
+    const datos = datosAgrupados.map(p => ({ 'Producto': p.nombre, 'Cantidad Vendida': p.cantidad, 'Total Recaudado': p.total }));
+    const ws = XLSX.utils.json_to_sheet(datos); const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Ventas'); XLSX.writeFile(wb, `Ventas_${filtroActual}_${new Date().toLocaleDateString()}.xlsx`);
+  }
+
+  function exportarPDF() {
+    const { jsPDF } = window.jspdf; const doc = new jsPDF();
+    doc.text(`Resumen de Ventas (${filtroActual.toUpperCase()})`, 14, 15);
+    doc.text(`Ingresos: ${document.getElementById('totalIngresos').innerText} | Pedidos: ${document.getElementById('totalPedidos').innerText}`, 14, 25);
+    const columnas = ['Producto', 'Cantidad', 'Total'];
+    const filas = datosAgrupados.map(p => [p.nombre, p.cantidad, '$' + p.total.toFixed(2)]);
+    doc.autoTable({ head: [columnas], body: filas, startY: 35, headStyles: { fillColor: [122, 62, 45] } });
+    doc.save(`Ventas_${filtroActual}.pdf`);
+  }
+
+  function exportarWord() {
+    let html = `
+      <html><head><meta charset="UTF-8"></head><body>
+        <h1 style="color: #7a3e2d;">Resumen de Ventas (${filtroActual.toUpperCase()})</h1>
+        <p><strong>Ingresos Totales:</strong> ${document.getElementById('totalIngresos').innerText}</p>
+        <p><strong>Pedidos:</strong> ${document.getElementById('totalPedidos').innerText}</p>
+        <table border="1" style="border-collapse: collapse; width: 100%; text-align: center;">
+          <tr style="background-color: #7a3e2d; color: white;"><th>Producto</th><th>Cantidad</th><th>Total Recaudado</th></tr>
+          ${datosAgrupados.map(p => `<tr><td>${p.nombre}</td><td>${p.cantidad}</td><td>$${p.total.toFixed(2)}</td></tr>`).join('')}
+        </table>
+      </body></html>
+    `;
+    const blob = new Blob([html], { type: 'application/msword' });
+    saveAs(blob, `Ventas_${filtroActual}.doc`);
+  }
+
+  cargarVentas();
+  setInterval(cargarVentas, 10000); 
+</script>
+</body>
+</html>
