@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Iniciar Sesión - Pastelería</title>
-  <!-- Fuentes de Google: Poppins para el texto general y Pacifico para el título -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&family=Pacifico&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
@@ -16,73 +15,47 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 30px 20px;
+      justify-content: center;
+      padding: 20px;
     }
 
-    /* Encabezado adaptado para verse grande en PC y perfecto en celular */
-.header-text { text-align: center; margin-bottom: 30px; }
+    /* Encabezado principal */
+    .header-text { text-align: center; margin-bottom: 25px; }
+    .header-text .icon-cupcake { font-size: 3rem; color: #d35400; margin-bottom: 5px; }
+    .header-text h1 { color: #7a3e2d; font-size: 2rem; font-weight: 500; line-height: 1.2; }
+    .header-text h1 span { 
+      display: block; 
+      font-family: 'Pacifico', cursive; 
+      color: #ff6f61; 
+      font-size: clamp(3rem, 10vw, 4.5rem); /* Se adapta al tamaño de la pantalla */
+      font-weight: normal;
+      margin-top: -5px;
+    }
+    .header-text p { color: #777; font-size: 1.1rem; margin-top: 10px; }
 
-.header-text .icon-cupcake { 
-  font-size: 4rem; /* Icono más grande */
-  color: #d35400; 
-  margin-bottom: 10px; 
-}
-
-.header-text h1 { 
-  color: #7a3e2d; 
-  font-size: 3rem; /* Letra más grande para PC */
-  font-weight: 500; 
-  line-height: 1.2; 
-}
-
-.header-text h1 span { 
-  display: block; 
-  font-family: 'Pacifico', cursive; 
-  color: #ff6f61; 
-  font-size: 5.5rem; /* "Pastelería" gigante para PC */
-  font-weight: normal;
-  margin-top: 0px;
-}
-
-.header-text p { 
-  color: #777; 
-  font-size: 1.5rem; /* Subtítulo más grande */
-  margin-top: 15px; 
-}
-
-/* Ajuste para que en celulares se vea grandote pero sin salirse de la pantalla */
-@media (max-width: 768px) {
-  .header-text .icon-cupcake { font-size: 3rem; }
-  .header-text h1 { font-size: 2rem; }
-  .header-text h1 span { font-size: 4rem; } /* Tamaño ideal para el celular */
-  .header-text p { font-size: 1.1rem; }
-}
-    .header-text p { color: #777; font-size: 1rem; margin-top: 10px; }
-
-    /* Tarjeta blanca central */
+    /* Tarjeta contenedora (El truco para que se vea igual en PC y celular) */
     .card {
       background: #fff;
       width: 100%;
-      max-width: 400px;
+      max-width: 420px; /* En PC no crecerá más de esto, en celular ocupará el 100% */
       border-radius: 30px;
-      padding: 20px;
+      padding: 25px;
       box-shadow: 0 15px 40px rgba(0,0,0,0.1);
     }
 
-    /* Imagen del pastel dentro de la tarjeta */
     .card-image {
       width: 100%;
-      height: 200px;
+      height: 180px;
       object-fit: cover;
       border-radius: 20px;
       margin-bottom: 20px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
     }
 
-    /* Campos de texto */
     .input-group { margin-bottom: 15px; }
     input {
       width: 100%;
-      padding: 15px;
+      padding: 16px;
       border-radius: 15px;
       border: 1px solid #eee;
       background: #fafafa;
@@ -92,14 +65,13 @@
     }
     input:focus { border-color: #ff6f61; background: #fff; }
 
-    /* Botón idéntico al de la imagen (Rojo) */
     .btn {
       width: 100%;
       padding: 16px;
       background: #ff6f61;
       color: white;
       border: none;
-      border-radius: 50px; /* Bordes muy redondeados tipo píldora */
+      border-radius: 50px;
       cursor: pointer;
       font-weight: 600;
       font-size: 1.1rem;
@@ -112,27 +84,13 @@
       margin-top: 10px;
     }
     .btn:active { transform: scale(0.98); }
-    .btn i { font-size: 1.2rem; }
 
-    /* Separador con corazón */
-    .divider {
-      display: flex;
-      align-items: center;
-      text-align: center;
-      margin: 25px 0 15px 0;
-      color: #ff6f61;
-    }
-    .divider::before, .divider::after {
-      content: '';
-      flex: 1;
-      border-bottom: 1px solid #ffd6cc;
-    }
+    .divider { display: flex; align-items: center; text-align: center; margin: 25px 0 15px 0; color: #ff6f61; }
+    .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid #ffd6cc; }
     .divider i { margin: 0 10px; font-size: 0.9rem; }
 
-    /* Link inferior */
-    .link { text-align: center; font-size: 0.9rem; color: #777; }
+    .link { text-align: center; font-size: 0.95rem; color: #777; }
     .link a { color: #ff6f61; text-decoration: none; font-weight: bold; }
-
   </style>
 </head>
 <body>
@@ -169,10 +127,7 @@
     const correo = document.getElementById("correo").value.trim();
     const password = document.getElementById("password").value.trim();
 
-    if (!correo || !password) {
-      alert("❌ Completa todos los campos");
-      return;
-    }
+    if (!correo || !password) { alert("❌ Completa todos los campos"); return; }
 
     try {
       const res = await fetch("/login", {
@@ -184,23 +139,14 @@
       if (res.ok) {
         const data = await res.json();
         alert(data.mensaje);
-        localStorage.setItem("usuario", JSON.stringify({
-          nombre: data.nombre,
-          rol: data.rol,
-          correo: correo
-        }));
-        if (data.rol === "Administrador") {
-          window.location.href = "/admin";
-        } else {
-          window.location.href = "/cliente";
-        }
+        localStorage.setItem("usuario", JSON.stringify({ nombre: data.nombre, rol: data.rol, correo: correo }));
+        if (data.rol === "Administrador") { window.location.href = "/admin"; } 
+        else { window.location.href = "/cliente"; }
       } else {
         const error = await res.json();
         alert("❌ " + (error.error || "Credenciales incorrectas"));
       }
-    } catch (error) {
-      alert("❌ Error de conexión con el servidor");
-    }
+    } catch (error) { alert("❌ Error de conexión"); }
   }
 </script>
 </body>
