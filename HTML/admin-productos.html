@@ -9,20 +9,15 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
     body { background: linear-gradient(135deg, #ffe6d9, #ffd6cc); min-height: 100vh; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-    
     .app-container { width: 100%; max-width: 1100px; }
-    
     .header-text { text-align: center; margin-bottom: 20px; }
     .header-text h1 { color: #7a3e2d; font-size: 1.5rem; }
     .header-text h1 span { display: block; font-family: 'Pacifico', cursive; color: #ff6f61; font-size: 3rem; margin-top: -5px; font-weight: normal; }
-    
     .nav-bar { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
     .nav-bar a { text-decoration: none; padding: 10px 20px; border-radius: 50px; background: #fff; color: #7a3e2d; font-weight: 500; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: 0.3s; }
     .nav-bar a:hover, .nav-bar a.active { background: #ff6f61; color: white; }
-
     .acciones-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
     .btn-agregar { background: #f7b267; color: white; border: none; padding: 12px 25px; border-radius: 50px; font-weight: bold; cursor: pointer; box-shadow: 0 5px 15px rgba(247,178,103,0.3); }
-    
     .productos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
     .producto-card { background: #fff; border-radius: 25px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.08); display: flex; flex-direction: column; }
     .producto-img { width: 100%; height: 150px; object-fit: cover; }
@@ -34,39 +29,31 @@
     .acciones button { flex: 1; padding: 10px; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; color: white; }
     .editar { background: #f7b267; }
     .eliminar { background: #e74c3c; }
-    
     .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000; }
     .modal-contenido { background: #fff; padding: 25px; border-radius: 30px; width: 90%; max-width: 400px; }
     .modal-contenido h2 { color: #7a3e2d; margin-bottom: 15px; text-align: center; }
     .modal-contenido input, .modal-contenido textarea { width: 100%; padding: 15px; margin: 8px 0; border-radius: 15px; border: 1px solid #eee; background: #fafafa; outline: none; font-size: 1rem;}
     .modal-contenido button { width: 100%; padding: 15px; background: #ff6f61; color: white; border: none; border-radius: 50px; margin-top: 15px; cursor: pointer; font-weight: bold; }
     .cerrar { background: #aaa !important; }
-
     @media (max-width: 850px) { .productos-grid { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 600px) { .productos-grid { grid-template-columns: 1fr; } .header-text h1 span { font-size: 2.5rem; } .acciones-top { flex-direction: column; gap: 10px; } }
   </style>
 </head>
 <body>
 <div class="app-container">
-  <div class="header-text">
-    <h1>Panel de <span>Administración</span></h1>
-  </div>
-  
+  <div class="header-text"><h1>Panel de <span>Administración</span></h1></div>
   <div class="nav-bar">
     <a href="/"><i class="fas fa-home"></i> Inicio</a>
     <a href="/menu-publico"><i class="fas fa-utensils"></i> Menú</a>
     <a href="/reporte"><i class="fas fa-chart-bar"></i> Reporte</a>
     <a href="/admin" class="active"><i class="fas fa-cog"></i> Admin</a>
   </div>
-
   <div class="acciones-top">
     <h2 style="color: #7a3e2d;">Mis Productos</h2>
     <button class="btn-agregar" onclick="abrirModal()"><i class="fas fa-plus"></i> Nuevo Producto</button>
   </div>
-
   <div id="productosContainer" class="productos-grid"></div>
 </div>
-
 <div id="modal" class="modal">
   <div class="modal-contenido">
     <h2 id="modalTitulo">Producto</h2>
@@ -80,7 +67,6 @@
     <button class="cerrar" onclick="cerrarModal()">Cancelar</button>
   </div>
 </div>
-
 <script>
   let productos = [];
   async function cargar() {
@@ -100,7 +86,6 @@
       </div>
     `).join('');
   }
-
   function abrirModal() {
     document.getElementById('modalTitulo').innerText = 'Nuevo Producto';
     document.getElementById('productoId').value = '';
@@ -109,7 +94,6 @@
     document.getElementById('modal').style.display = 'flex';
   }
   function cerrarModal() { document.getElementById('modal').style.display = 'none'; }
-
   async function guardarProducto() {
     const id = document.getElementById('productoId').value;
     const body = {
@@ -121,7 +105,6 @@
     else { await fetch('/productos', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }); }
     cerrarModal(); cargar();
   }
-
   async function editar(id) {
     const p = productos.find(x => x._id === id);
     document.getElementById('modalTitulo').innerText = 'Editar Producto';
@@ -130,7 +113,6 @@
     document.getElementById('precio').value = p.precio; document.getElementById('cantidad').value = p.cantidad; document.getElementById('imagenUrl').value = p.imagenUrl;
     document.getElementById('modal').style.display = 'flex';
   }
-
   async function eliminar(id) { if (confirm('¿Eliminar producto?')) { await fetch('/productos/' + id, { method: 'DELETE' }); cargar(); } }
   cargar();
 </script>
