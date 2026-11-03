@@ -2,30 +2,38 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Pastelería</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bienvenido - Pastelería</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+    
     body {
       background: linear-gradient(135deg, #ffe6d9, #ffd6cc);
-      height: 100vh;
+      min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
+      padding: 20px; /* Margen de seguridad en celular */
     }
+    
     .container {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      width: 900px;
+      grid-template-columns: 1fr 1fr; /* 2 columnas en PC */
+      width: 100%;
+      max-width: 900px; /* No crece más de esto en PC */
       background: #fff;
       border-radius: 25px;
       overflow: hidden;
       box-shadow: 0 15px 40px rgba(0,0,0,0.2);
     }
+    
     .left {
       background: url('https://images.unsplash.com/photo-1578985545062-69928b1d9587') center/cover;
       position: relative;
+      min-height: 400px;
     }
+    
     .left::after {
       content: "";
       position: absolute;
@@ -33,59 +41,78 @@
       height: 100%;
       background: rgba(255, 150, 150, 0.3);
     }
-    .right { padding: 40px; text-align: center; }
-    h1 { color: #7a3e2d; margin-bottom: 10px; }
-    h1 span { color: #ff6f61; font-weight: bold; }
-    p { color: #555; margin-bottom: 25px; }
+    
+    .right { 
+      padding: clamp(20px, 5vw, 40px); /* Padding fluido */
+      text-align: center; 
+      display: flex; 
+      flex-direction: column; 
+      justify-content: center; 
+    }
+    
+    h1 { 
+      color: #7a3e2d; 
+      margin-bottom: 10px; 
+      font-size: clamp(1.8rem, 4vw, 2.5rem); /* Letra fluida */
+      line-height: 1.2;
+    }
+    h1 span { color: #ff6f61; }
+    
+    p { 
+      color: #777; 
+      margin-bottom: 30px; 
+      font-size: clamp(1rem, 2vw, 1.2rem); /* Letra fluida */
+    }
+    
     .btn {
-      display: block;
       width: 100%;
-      padding: 12px;
-      margin: 10px 0;
+      padding: clamp(12px, 2vw, 15px);
       border: none;
       border-radius: 10px;
-      font-size: 16px;
+      font-size: clamp(1rem, 2vw, 1.1rem);
       cursor: pointer;
+      font-weight: bold;
+      margin-bottom: 15px;
+      transition: 0.2s;
     }
-    .login { background: #ff6f61; color: white; }
-    .registro { background: #f7b267; color: white; }
-    .footer { margin-top: 20px; font-size: 12px; color: #aaa; }
-  /* DISEÑO PARA CELULARES */
-/* DISEÑO PARA CELULARES */
-@media (max-width: 768px) {
-  .container { 
-    grid-template-columns: 1fr; 
-    width: 95%; 
-    margin: 20px auto; 
-    border-radius: 15px;
-  }
-  .left { 
-    display: none; /* Ocultamos la imagen del pastel para que quepa el texto */
-  }
-  body { 
-    height: auto; 
-    padding: 20px; 
-    align-items: flex-start; 
-  }
-  .right { 
-    padding: 20px; 
-  }
-  h1 { 
-    font-size: 1.8rem; 
-  }
-}
+    
+    .btn-login { background: #ff6f61; color: white; box-shadow: 0 5px 15px rgba(255,111,97,0.3); }
+    .btn-login:hover { background: #e05a4f; }
+    
+    .btn-registro { background: #f7b267; color: white; box-shadow: 0 5px 15px rgba(247,178,103,0.3); }
+    .btn-registro:hover { background: #e09d46; }
+    
+    .footer { margin-top: 15px; font-size: clamp(0.8rem, 1.5vw, 0.9rem); color: #aaa; }
+
+    /* ESTA ES LA MAGIA PARA EL CELULAR */
+    @media (max-width: 768px) {
+      .container { 
+        grid-template-columns: 1fr; /* 1 sola columna */
+        max-width: 450px; /* Tamaño ideal para centrar en tablet */
+      }
+      .left { 
+        display: none; /* Ocultamos la imagen para que quepa todo perfecto */
+      }
+      .right { 
+        padding: 40px 25px; /* Ajustamos el espacio interno */
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="left"></div>
-    <div class="right">
-      <h1>Bienvenido a la <span>Pastelería</span></h1>
-      <p>Descubre los mejores postres 🍰</p>
-      <button class="btn login" onclick="location.href='login.html'">Iniciar Sesión</button>
-      <button class="btn registro" onclick="location.href='registro.html'">Registrarse</button>
-      <div class="footer">❤️ Gracias por elegirnos</div>
-    </div>
+
+<div class="container">
+  <div class="left"></div>
+  <div class="right">
+    <h1>Bienvenido a la <span>Pastelería</span></h1>
+    <p>Descubre los mejores postres 🍰</p>
+    
+    <button class="btn btn-login" onclick="location.href='/login.html'">Iniciar Sesión</button>
+    <button class="btn btn-registro" onclick="location.href='/registro.html'">Registrarse</button>
+    
+    <div class="footer">❤️ Gracias por elegirnos</div>
   </div>
+</div>
+
 </body>
 </html>
