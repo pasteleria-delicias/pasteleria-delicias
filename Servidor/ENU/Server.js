@@ -16,6 +16,28 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, '../../HTML')));
 
 // ==========================================
+// 🛡️ CANDADO DE SEGURIDAD MAESTRO (AUTENTICACIÓN BÁSICA)
+// ==========================================
+const basicAuth = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (authHeader) {
+    const auth = Buffer.from(authHeader.split(' ')[1], 'base64').toString().split(':');
+    const user = auth[0];
+    const pass = auth[1];
+    
+    // AQUÍ ESTÁN TUS CREDENCIALES SECRETAS
+    if (user === 'mary' && pass === 'pasteleria123') {
+      next();
+    } else {
+      res.status(401).send('⛔ Acceso denegado. Credenciales incorrectas.');
+    }
+  } else {
+    res.set('WWW-Authenticate', 'Basic');
+    res.status(401).send('⛔ Necesitas iniciar sesión para ver esta página.');
+  }
+};
+
+// ==========================================
 // RUTAS DE LA API (Backend)
 // ==========================================
 const usuariosRoutes = require("../routes/usuarios");
@@ -29,7 +51,7 @@ app.use(ventasRoutes);
 const Producto = require("../models/Producto");
 
 // ==========================================
-// PRODUCTOS INICIALES (Solo se cargan si la BD está vacía)
+// PRODUCTOS INICIALES
 // ==========================================
 const productosIniciales = [
   { nombre: "Pastel de Vainilla y Frambuesa", descripcion: "Bizcocho suave de vainilla, relleno de frambuesa y crema de mantequilla.", precio: 16.90, cantidad: 10, imagenUrl: "https://picsum.photos/id/176/300/170" },
@@ -41,7 +63,7 @@ const productosIniciales = [
 ];
 
 // ==========================================
-// CONEXIÓN A MONGODB Y ARRANQUE DEL SERVIDOR
+// CONEXIÓN A MONGODB Y ARRANQUE
 // ==========================================
 mongoose.connect(process.env.MONGO_URI)
   .then(async () => {
@@ -68,7 +90,7 @@ mongoose.connect(process.env.MONGO_URI)
 // RUTAS DE LAS PÁGINAS (Frontend)
 // ==========================================
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "../../HTML/registro.html"));
+  res.sendFile(path.join(__dirname, "../../HTML/index.html"));
 });
 
 app.get("/login", (req, res) => {
@@ -77,19 +99,6 @@ app.get("/login", (req, res) => {
 
 app.get("/registro", (req, res) => {
   res.sendFile(path.join(__dirname, "../../HTML/registro.html"));
-});
-
-app.get("/admin", (req, res) => {
-  res.sendFile(path.join(__dirname, "../../HTML/admin-productos.html"));
-});
-
-app.get("/reporte", (req, res) => {
-  res.sendFile(path.join(__dirname, "../../HTML/reporte-productos.html"));
-});
-
-// RUTA NUEVA PARA REPORTE DE VENTAS
-app.get("/reporte-ventas", (req, res) => {
-  res.sendFile(path.join(__dirname, "../../HTML/reporte-ventas.html"));
 });
 
 app.get("/menu-publico", (req, res) => {
@@ -106,4 +115,23 @@ app.get("/pago", (req, res) => {
 
 app.get("/detalle-producto", (req, res) => {
   res.sendFile(path.join(__dirname, "../../HTML/detalle-producto.html"));
+});
+
+app.get("/registro-admin", (req, res) => {
+  res.sendFile(path.join(__dirname, "../../HTML/registro-admin.html"));
+});
+
+// ==========================================
+// 🛡️ RUTAS PROTEGIDAS (Aquí actúa el Candado)
+// ==========================================
+app.get("/admin", basicAuth, (req, res) => {
+  res.sendFile(path.join(__dirname, "../../HTML/admin-productos.html"));
+});
+
+app.get("/reporte", basicAuth, (req, res) => {
+  res.sendFile(path.join(__dirname, "../../HTML/reporte-productos.html"));
+});
+
+app.get("/reporte-ventas", basicAuth, (req, res) => {
+  res.sendFile(path.join(__dirname, "../../HTML/reporte-ventas.html"));
 });
