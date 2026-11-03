@@ -14,30 +14,14 @@
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
     body { background: linear-gradient(135deg, #ffe6d9, #ffd6cc); padding: 20px; min-height: 100vh; display: flex; justify-content: center; }
     
-    .container { max-width: 1200px; width: 100%; background: #fff; border-radius: 30px; padding: clamp(20px, 4vw, 40px); box-shadow: 0 20px 50px rgba(0,0,0,0.1); height: fit-content; }
+    .container { max-width: 1100px; width: 100%; background: #fff; border-radius: 30px; padding: clamp(20px, 4vw, 40px); box-shadow: 0 20px 50px rgba(0,0,0,0.1); height: fit-content; }
     
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px; }
     h1 { color: #7a3e2d; display: flex; align-items: center; gap: 10px; font-size: clamp(1.5rem, 4vw, 2rem); }
     .btn-volver { background: #f7b267; color: white; border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; font-weight: bold; text-decoration: none; font-size: clamp(0.9rem, 2vw, 1rem); }
-    
-    /* Indicador de actualización automática */
-    .live-indicator {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: #e8f5e9;
-      color: #2e7d32;
-      padding: 5px 15px;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: bold;
-      margin-left: 10px;
-    }
-    .dot { width: 8px; height: 8px; background: #2e7d32; border-radius: 50%; animation: pulse 1.5s infinite; }
-    @keyframes pulse { 0% { transform: scale(0.95); opacity: 0.7; } 50% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(0.95); opacity: 0.7; } }
 
-    .botones-exportar { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
-    .btn { padding: 12px 20px; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; color: white; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; font-size: clamp(0.9rem, 2vw, 1rem); flex: 1; min-width: 150px;}
+    .botones-exportar { display: flex; gap: 15px; margin-bottom: 25px; flex-wrap: wrap; }
+    .btn { padding: 12px 20px; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; color: white; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; font-size: 0.9rem; flex: 1; min-width: 120px;}
     .btn-excel { background: #1e7e34; }
     .btn-pdf { background: #dc3545; }
     .btn-word { background: #0078d7; }
@@ -45,7 +29,7 @@
     /* Tabla para PC */
     .tabla-container { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; background: #fff9f7; border-radius: 15px; overflow: hidden; min-width: 600px; }
-    th { background: #ff6f61; color: white; padding: clamp(10px, 2vw, 15px); text-align: center; font-weight: 600; font-size: clamp(0.9rem, 2vw, 1rem); }
+    th { background: #7a3e2d; color: white; padding: clamp(10px, 2vw, 15px); text-align: center; font-weight: 600; font-size: clamp(0.9rem, 2vw, 1rem); }
     td { padding: clamp(10px, 2vw, 15px); border-bottom: 1px solid #ffe0d4; text-align: center; vertical-align: middle; font-size: clamp(0.8rem, 1.5vw, 0.95rem); }
     tr:hover { background: #fff0e8; }
     .producto-img { width: 50px; height: 50px; object-fit: cover; border-radius: 10px; }
@@ -66,13 +50,11 @@
 <body>
 <div class="container">
   <div class="header">
-    <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 10px;">
-      <h1><i class="fas fa-chart-line"></i> Reporte de Productos</h1>
-      <div class="live-indicator"><div class="dot"></div> En vivo</div>
-    </div>
+    <h1><i class="fas fa-box-open"></i> Reporte de Productos</h1>
     <a href="/admin" class="btn-volver"><i class="fas fa-arrow-left"></i> Volver</a>
   </div>
 
+  <!-- BOTONES DE EXPORTACIÓN -->
   <div class="botones-exportar">
     <button class="btn btn-excel" onclick="exportarExcel()"><i class="fas fa-file-excel"></i> Excel</button>
     <button class="btn btn-pdf" onclick="exportarPDF()"><i class="fas fa-file-pdf"></i> PDF</button>
@@ -121,31 +103,64 @@
     }
   }
 
-  // ==========================================
-  // MAGIA: ACTUALIZACIÓN AUTOMÁTICA CADA 5 SEGUNDOS
-  // ==========================================
-  cargarProductos(); // Carga inicial
-  setInterval(cargarProductos, 5000); // Se actualiza cada 5 segundos
+  // ACTUALIZACIÓN AUTOMÁTICA CADA 5 SEGUNDOS
+  cargarProductos(); 
+  setInterval(cargarProductos, 5000); 
 
   // --- FUNCIONES DE EXPORTACIÓN ---
+  
+  // 1. EXPORTAR A EXCEL
   function exportarExcel() {
     const datos = productos.map(p => ({ 'Nombre': p.nombre, 'Descripción': p.descripcion, 'Precio': p.precio, 'Cantidad': p.cantidad }));
-    const ws = XLSX.utils.json_to_sheet(datos); const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Productos'); XLSX.writeFile(wb, `Reporte_${new Date().toLocaleDateString()}.xlsx`);
+    const ws = XLSX.utils.json_to_sheet(datos); 
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Productos'); 
+    XLSX.writeFile(wb, `Reporte_Productos_${new Date().toLocaleDateString()}.xlsx`);
   }
 
+  // 2. EXPORTAR A PDF
   function exportarPDF() {
-    const { jsPDF } = window.jspdf; const doc = new jsPDF({ orientation: 'landscape' });
+    const { jsPDF } = window.jspdf; 
+    const doc = new jsPDF({ orientation: 'landscape' });
     doc.text('Reporte de Productos - Pastelería Delicia', 14, 15);
     const columnas = ['Nombre', 'Descripción', 'Precio', 'Cantidad'];
-    const filas = productos.map(p => [p.nombre, p.descripcion.length > 50 ? p.descripcion.substring(0, 50) + '...' : p.descripcion, '$' + p.precio.toFixed(2), p.cantidad]);
-    doc.autoTable({ head: [columnas], body: filas, startY: 25, headStyles: { fillColor: [255, 111, 97] } });
-    doc.save(`Reporte_${new Date().toLocaleDateString()}.pdf`);
+    const filas = productos.map(p => [
+      p.nombre, 
+      p.descripcion.length > 50 ? p.descripcion.substring(0, 50) + '...' : p.descripcion, 
+      '$' + p.precio.toFixed(2), 
+      p.cantidad
+    ]);
+    doc.autoTable({ head: [columnas], body: filas, startY: 25, headStyles: { fillColor: [122, 62, 45] } });
+    doc.save(`Reporte_Productos_${new Date().toLocaleDateString()}.pdf`);
   }
 
+  // 3. EXPORTAR A WORD
   function exportarWord() {
-    let html = `<html><head><meta charset="UTF-8"></head><body><h1 style="color: #7a3e2d;">Reporte de Productos</h1><table border="1" style="border-collapse: collapse; width: 100%; text-align: center;"><tr style="background-color: #ff6f61; color: white;"><th>Nombre</th><th>Descripción</th><th>Precio</th><th>Cantidad</th></tr>${productos.map(p => `<tr><td>${p.nombre}</td><td>${p.descripcion}</td><td>$${p.precio.toFixed(2)}</td><td>${p.cantidad}</td></tr>`).join('')}</table></body></html>`;
-    const blob = new Blob([html], { type: 'application/msword' }); saveAs(blob, `Reporte_${new Date().toLocaleDateString()}.doc`);
+    let html = `
+      <html>
+      <head><meta charset="UTF-8"><title>Reporte de Productos</title></head>
+      <body>
+        <h1 style="color: #7a3e2d;">Reporte de Productos - Pastelería Delicia</h1>
+        <p>Fecha: ${new Date().toLocaleString()}</p>
+        <table border="1" style="border-collapse: collapse; width: 100%; text-align: center;">
+          <tr style="background-color: #7a3e2d; color: white;">
+            <th>Imagen</th><th>Nombre</th><th>Descripción</th><th>Precio</th><th>Cantidad</th>
+          </tr>
+          ${productos.map(p => `
+            <tr>
+              <td>${p.imagenUrl ? `<img src="${p.imagenUrl}" width="50" height="50">` : 'Sin imagen'}</td>
+              <td>${p.nombre}</td>
+              <td>${p.descripcion}</td>
+              <td>$${p.precio.toFixed(2)}</td>
+              <td>${p.cantidad}</td>
+            </tr>
+          `).join('')}
+        </table>
+      </body>
+      </html>
+    `;
+    const blob = new Blob([html], { type: 'application/msword' });
+    saveAs(blob, `Reporte_Productos_${new Date().toLocaleDateString()}.doc`);
   }
 </script>
 </body>
