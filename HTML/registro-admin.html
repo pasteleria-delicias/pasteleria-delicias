@@ -10,8 +10,8 @@
     body { background: linear-gradient(135deg, #ffe6d9, #ffd6cc); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
     .container { width: 100%; max-width: 400px; background: #fff; border-radius: 25px; padding: 30px; box-shadow: 0 15px 40px rgba(0,0,0,0.2); }
     h2 { color: #7a3e2d; text-align: center; margin-bottom: 20px; }
-    input, select { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid #ddd; outline: none; }
-    .btn { width: 100%; padding: 12px; background: #f7b267; color: white; border: none; border-radius: 10px; margin-top: 15px; cursor: pointer; font-weight: bold; }
+    input, select { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid #ddd; outline: none; background: #fafafa; font-size: 1rem;}
+    .btn { width: 100%; padding: 12px; background: #f7b267; color: white; border: none; border-radius: 10px; margin-top: 15px; cursor: pointer; font-weight: bold; transition: 0.2s; font-size: 1rem;}
     .btn:hover { background: #e09d46; }
     .link { text-align: center; margin-top: 15px; font-size: 14px; }
     .link a { color: #ff6f61; text-decoration: none; font-weight: bold; }
@@ -20,17 +20,23 @@
 <body>
 <div class="container">
   <h2>Crear Administrador</h2>
-  <input id="nombre" type="text" placeholder="Nombre">
-  <input id="correo" type="email" placeholder="Correo">
-  <input id="password" type="password" placeholder="Contraseña">
+  
+  <!-- AQUÍ ESTÁ EL TRUCO: autocomplete="off" para evitar sugerencias -->
+  <input id="nombre" type="text" placeholder="Nombre completo" autocomplete="off">
+  <input id="correo" type="email" placeholder="Correo electrónico" autocomplete="off">
+  <input id="password" type="password" placeholder="Contraseña" autocomplete="new-password">
+  
   <select id="rol">
     <option value="">Cargando roles...</option>
   </select>
+  
   <button class="btn" onclick="registrar()">Registrarse</button>
+  
   <div class="link">
     ¿Ya tienes cuenta? <a href="/login.html">Iniciar sesión</a>
   </div>
 </div>
+
 <script>
   async function cargarRoles() {
     try {
@@ -48,12 +54,18 @@
       document.getElementById("rol").innerHTML = '<option value="">Error al cargar roles</option>';
     }
   }
+
   async function registrar() {
     const nombre = document.getElementById("nombre").value.trim();
     const correo = document.getElementById("correo").value.trim();
     const password = document.getElementById("password").value.trim();
     const rolId = document.getElementById("rol").value;
-    if (!nombre || !correo || !password || !rolId) { alert("Completa todos los campos"); return; }
+
+    if (!nombre || !correo || !password || !rolId) { 
+      alert("❌ Completa todos los campos y selecciona un rol"); 
+      return; 
+    }
+
     try {
       const res = await fetch("/registro", {
         method: "POST",
@@ -62,9 +74,14 @@
       });
       const data = await res.text();
       alert(data);
-      if (res.ok) window.location.href = "login.html";
-    } catch (error) { alert("Error de conexión"); }
+      if (res.ok) {
+        window.location.href = "/login.html";
+      }
+    } catch (error) { 
+      alert("❌ Error de conexión"); 
+    }
   }
+
   cargarRoles();
 </script>
 </body>
